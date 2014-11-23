@@ -16,27 +16,24 @@ import pygame
 from pygame.locals import * 
 
 _INITIALIZED = False
-_PICSPATH = None
+_UTIL = None
 
-
-def init():
+def _init(picspath, carddatapath):
+    global _INITIALIZED
+    global _UTIL
     if _INITIALIZED:
         return
-    
+    _UTIL = Utilities(picspath, carddatapath)
+    _INITIALIZED = True
 
-
-class Utilities:
-    _single = None
+class Utilities(object):
     def __init__(self, picspath, carddatapath):
-        if Utilities._single:
-            raise Utilities._single
         self.picspath = picspath
         self.carddatapath = carddatapath
         
         self.IMAGEDATA = {}
         self.imagelist = glob.glob(picspath + '*.png')
         self._loadImages()
-        Utilities._single = self
 
     def _loadImages(self):
         for img in self.imagelist:
@@ -49,41 +46,47 @@ class Utilities:
     def getImageList(self):
         return self.imagelist
 
-class ImageData:
+class ImageData(object):
     def __init__(self, imagepath):
         self.image = pygame.image.load(imagepath)
-        self.compiledimage = None
-        self.compiled = False
+        self.convertedimage = None
+        self.converted = False
     
-    def isCompiled(self):
-        return self.compiled
+    def isConverted(self):
+        return self.converted
 
-    def getCompiledImage(self):
-        if self.compiled:
-            return self.compiledimage
-        raise Exception('Image Not Compiled')
+    def getConvertedImage(self):
+        if self.converted:
+            return self.convertedimage
+        raise Exception('Image Not Converted')
     
-    def compileImage(self, alpha):
-        if self.compiled:
+    def convertImage(self, alpha):
+        if self.converted:
             return
         if alpha:
-            self.compiledimage = self.image.convert_alpha()
+            self.convertedimage = self.image.convert_alpha()
         else:
-            self.compiledimage = self.image.convert()
-        self.compiled = True
+            self.convertedimage = self.image.convert()
+        self.converted = True
 
 def getGlobals():
-    try:
-        utils = Utilities(os.path.join(os.getcwd(), 'pics/'), None)
-        return utils
-    except Utilities, s:
-        return s
+    if not _INITIALIZED:
+        _init(os.path.join(os.getcwd(), 'pics/'), None)
+    return _UTIL
+    
 
 def getImage(imagename, alpha=True):
+    """
+    " This method will load pygame surface representation using the images name.
+    " If the image has been converted already then that image will be returned,
+    " otherwise it will be converted using either convert() or convert_alpha().
+    " When the image name does not exist then an exception is raised.
+    " Names are in the form [name].[imagetype].
+    """
     imagedata = getGlobals().getImageData(imagename)
     if not imagedata:
         raise Exception('Image: %s, not found.' % (imagename))
-    if imagedata.isCompiled():
-        return imagedata.getCompiledImage()
-    imagedata.compileImage(alpha)
-    return imagedata.getCompiledImage()
+    if imagedata.isConverted():
+        return imagedata.getConvertedImage()
+    imagedata.convertImage(alpha)
+    return imagedata.getConvertedImage()

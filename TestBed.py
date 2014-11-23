@@ -21,8 +21,9 @@ class ImageViewerApplication(Application):
     def init(self):
         if self.numimages == 0:
             return False
-
-        return Application.init(self)
+        if Application.init(self) == False:
+            return False
+        pygame.key.set_repeat(500, 100)
 
     def onKeydown(self, event):
         key = event.key
