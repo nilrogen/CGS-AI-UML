@@ -1,22 +1,44 @@
+"""
+" AUTHOR: Michael Gorlin
+" DATE:   2014-11-22
+" 
+" This module contains the tools to load the resources required for the ui. 
+" Curently the only operation is to retrieve card image data and convert
+" them to pygame surfaces when needed.
+"
+" TODO: Fix model of retrieving resources.
+"""
+
 import os
-import pygame
-from pygame.locals import * 
 import glob
 
+import pygame
+from pygame.locals import * 
+
+_INITIALIZED = False
+_PICSPATH = None
+
+
+def init():
+    if _INITIALIZED:
+        return
+    
+
+
 class Utilities:
-    __single = None
+    _single = None
     def __init__(self, picspath, carddatapath):
-        if Utilities.__single:
-            raise Utilities.__single
+        if Utilities._single:
+            raise Utilities._single
         self.picspath = picspath
         self.carddatapath = carddatapath
         
         self.IMAGEDATA = {}
         self.imagelist = glob.glob(picspath + '*.png')
-        self.__loadImages()
-        Utilities.__single = self
+        self._loadImages()
+        Utilities._single = self
 
-    def __loadImages(self):
+    def _loadImages(self):
         for img in self.imagelist:
             imgpath = os.path.join(self.picspath, img)
             self.IMAGEDATA[img] = ImageData(imgpath)

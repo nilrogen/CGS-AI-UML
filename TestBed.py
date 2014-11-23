@@ -5,6 +5,7 @@ import json
 import os
 
 from ui.application import * 
+from ui.uiobjects import *
 import util.utilities as util
 
 class ImageViewerApplication(Application):

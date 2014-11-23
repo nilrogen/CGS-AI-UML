@@ -1,3 +1,10 @@
+"""
+" AUTHOR: Michael Gorlin
+" DATE:   2014-11-22
+"
+" This module contains the Application class, which serves as the base for
+" pygame applications.
+"""
 import pygame
 from pygame.locals import *
 
@@ -35,9 +42,13 @@ class Application:
         pygame.quit()
 
     def execute(self):
+        """
+        " This method houses the application loop. Do not override this methods.
+        """
         if self.init() == False:
             self.running = False
         while self.running:
+            # Hopefully looptime will allow this loop to iterate every 20ms
             looptime = pygame.time.get_ticks()
             for event in pygame.event.get():
                 self.handleEvent(event)
@@ -48,5 +59,4 @@ class Application:
             if looptime <= 20:
                 pygame.time.delay(20 - looptime)
         self.cleanup()
-
 
