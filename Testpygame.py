@@ -3,7 +3,6 @@ import os
 import pygame
 from pygame.locals import *
 
-
 IMGS = glob.glob('pics/*.png')
     
 class Application:
