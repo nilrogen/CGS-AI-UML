@@ -2,7 +2,6 @@ import glob
 import os
 import pygame
 from pygame.locals import *
-import numpy as np
 
 
 IMGS = glob.glob('pics/*.png')
