@@ -45,6 +45,7 @@ class Utilities(object):
 
     def getImageList(self):
         return self.imagelist
+    
 
 class ImageData(object):
     def __init__(self, imagepath):
@@ -85,7 +86,10 @@ def getImage(imagename, alpha=True):
     """
     imagedata = getGlobals().getImageData(imagename)
     if not imagedata:
-        raise Exception('Image: %s, not found.' % (imagename))
+        shortpath = os.path.join(getGlobals().picspath, imagename)
+        imagedata = getGlobals().getImageData(shortpath)
+        if not imagedata:
+            raise Exception('Image: %s not found.' % (imagename))
     if imagedata.isConverted():
         return imagedata.getConvertedImage()
     imagedata.convertImage(alpha)
