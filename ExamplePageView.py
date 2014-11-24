@@ -98,10 +98,12 @@ class ImageViewerApplication(Application):
 if __name__ == '__main__':
     imagelist = util.getGlobals().getImageList()
     cards = []
+    # TODO: Fix this 
     for i in imagelist[:8]:
-        cards.append(Card(i.split('.')[0]))
+        cards.append(Card(i.split(os.sep)[-1].split('.')[0]))
     app = ImageViewerApplication(cards, (710, 550))
     app.execute()
+    
         
         
         

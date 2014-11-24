@@ -66,6 +66,7 @@ class Card(object):
     """ Placeholder """
     def __init__(self, name):
         self.name = name
+        print name
         self.imagename = filter(lambda c: c not in ' :\'', name)
         self.imagename += '.png'
 

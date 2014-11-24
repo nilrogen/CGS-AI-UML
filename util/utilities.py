@@ -72,7 +72,7 @@ class ImageData(object):
 
 def getGlobals():
     if not _INITIALIZED:
-        _init(os.path.join(os.getcwd(), 'pics/'), None)
+        _init(os.path.join(os.getcwd(), 'pics' + os.sep), None)
     return _UTIL
     
 
