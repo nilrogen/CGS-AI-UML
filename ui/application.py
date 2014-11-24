@@ -7,16 +7,17 @@
 """
 import pygame
 from pygame.locals import *
+from uiobjects import UIObject
 
-class Application:
+class Application(UIObject):
     def __init__(self, windowsize = (500, 500)):
+        UIObject.__init__(self, pygame.Rect((0, 0, windowsize[0], windowsize[1])))
         self.running = True
         self._display = None
-        self.size = self.w, self.h = windowsize
 
     def init(self):
         pygame.init()
-        self._display = pygame.display.set_mode(self.size, pygame.HWSURFACE)
+        self._display = pygame.display.set_mode(self.bb.size, pygame.HWSURFACE)
         self.running = True
 
     def handleEvent(self, event):
@@ -37,6 +38,9 @@ class Application:
 
     def render(self):
         pass
+
+    def draw(self, surface):
+        self.render() 
 
     def cleanup(self):
         pygame.quit()

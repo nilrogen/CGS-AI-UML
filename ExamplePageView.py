@@ -8,43 +8,39 @@ from ui.application import *
 from ui.uiobjects import *
 import util.utilities as util
 
-class CardPage(UIObject):
-
-    def __init__(self, parent, boundingbox, bgimage, children):
-        UIObject.__init__(self, parent, boundingbox)
-        self.surface = util.getImage(bgimage)
+class CardPage(UICachedImageObject):
+    def __init__(self, boundingbox, bgimagename, children):
+        super(CardPage, self).__init__(bgimagename, boundingbox)
 
         self.children = []
         cardbb = pygame.Rect(0, 0, 150, 225)
 
-        for child in children:
-            self.children.append(UICard(self.surface, child, cardbb))
+        for card in children:
+            self.children.append(UICard(card, cardbb))
 
-    def draw(self):
+    def draw(self, surface):
+        super(CardPage, self).draw(surface)
         ypos = 30
         xpos = 30
         
-        self.parent.blit(self.surface, self.pos)
         for i in range(len(self.children)):
             child = self.children[i]
             if i == 4:
                 ypos = 255
                 xpos = 30
             child.move((xpos, ypos))
-            child.draw()
+            child.draw(self.surface)
             xpos += 170
 
 
 class ImageViewerApplication(Application):
     
     def __init__(self, cards, windowsize=(500, 500)):
-        Application.__init__(self, windowsize)
+        super(ImageViewerApplication, self).__init__(windowsize)
         self.cards = cards
         self.numimages = len(cards)
         self.index = 0
         self.cardjson = None
-
-
     
     def init(self):
         if self.numimages == 0:
@@ -54,9 +50,7 @@ class ImageViewerApplication(Application):
         pygame.key.set_repeat(500, 1000)
 
         bb = pygame.Rect(0, 0, self.w, self.h)
-        self.page = CardPage(self._display, bb, 'tmpbg.png', cards[:8])
-        
-
+        self.page = CardPage(bb, 'tmpbg.png', cards[:8])
 
     def onKeydown(self, event):
         key = event.key
@@ -80,7 +74,6 @@ class ImageViewerApplication(Application):
     def render(self):
         #images = self.getImages()
         disp = self._display
-
         disp.fill((0, 0, 0), pygame.Rect(0, 0, self.w, self.h))
         """
         locs = [(0, 0), (200, 0), (100, 100)]
@@ -89,17 +82,14 @@ class ImageViewerApplication(Application):
             timg.set_alpha(50)
             disp.blit(timg, locs[i])
         """
-        self.page.draw()
-
-
-
+        self.page.draw(disp)
         pygame.display.flip()
 
 if __name__ == '__main__':
     imagelist = util.getGlobals().getImageList()
     cards = []
     # TODO: Fix this 
-    for i in imagelist[:8]:
+    for i in imagelist:
         cards.append(Card(i.split(os.sep)[-1].split('.')[0]))
     app = ImageViewerApplication(cards, (710, 550))
     app.execute()
