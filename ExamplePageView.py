@@ -13,10 +13,19 @@ class CardPage(UICachedImageObject):
         super(CardPage, self).__init__(bgimagename, boundingbox)
 
         self.children = []
-        cardbb = pygame.Rect(0, 0, 150, 225)
+        self.cardbb = pygame.Rect(0, 0, 150, 225)
 
         for card in children:
-            self.children.append(UICard(card, cardbb))
+            self.children.append(UICard(card, self.cardbb))
+        self.x = True
+
+    def changeChildren(self, children):
+        children = [UICard(c, self.cardbb) for c in children]
+        if len(children) > 8:
+            assert(False)
+            self.children = children[0:8]
+        self.children = children
+
 
     def draw(self, surface):
         super(CardPage, self).draw(surface)
@@ -41,40 +50,39 @@ class ImageViewerApplication(Application):
         self.numimages = len(cards)
         self.index = 0
         self.cardjson = None
+        self.page = None
+        self.changed = False
     
     def init(self):
         if self.numimages == 0:
             return False
         if Application.init(self) == False:
             return False
-        pygame.key.set_repeat(500, 1000)
+        pygame.key.set_repeat(400, 800)
 
         bb = pygame.Rect(0, 0, self.w, self.h)
-        self.page = CardPage(bb, 'tmpbg.png', cards[:8])
+        self.page = CardPage(bb, 'tmpbg.png', cards[self.index:self.index+8])
 
     def onKeydown(self, event):
         key = event.key
         if key == K_LEFT or key == K_a:
-            self.index = (8*(self.index - 1)) % self.numimages
+            self.index = (self.index - 8) % self.numimages
             self.changed = True
         elif key == K_RIGHT or key == K_d:
-            self.index = (8*(self.index + 1)) % self.numimages
+            self.index = (self.index + 8) % self.numimages
             self.changed = True
         elif key == K_ESCAPE or key == K_q:
             self.running = False
-       
-       
-    def getImages(self):
-        images = []
-        for i in [-1, 1, 0]:
-            modindex = (self.index + i) % self.numimages
-            images.append(util.getImage(self.imagenames[modindex]))
-        return images
+
+    def loop(self):
+        if self.changed:
+            self.changed = False
+            self.page.changeChildren(cards[self.index:self.index+8])
 
     def render(self):
         #images = self.getImages()
         disp = self._display
-        disp.fill((0, 0, 0), pygame.Rect(0, 0, self.w, self.h))
+        #disp.fill((0, 0, 0), pygame.Rect(0, 0, self.w, self.h))
         """
         locs = [(0, 0), (200, 0), (100, 100)]
         for i in range(len(images)):

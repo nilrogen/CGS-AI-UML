@@ -23,7 +23,7 @@ def loadJson():
 
 def downloadCard(card):
     # remove bad space, colon, and apostrophy from card name. 
-    cname = filter(lambda c: c not in ' :\'', card["name"])
+    cname = filter(lambda c: c not in ' .:\'', card["name"])
     cname += '.png'
 
     curl  = card["image_url"]

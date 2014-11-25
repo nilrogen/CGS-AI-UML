@@ -17,7 +17,7 @@ class UIObject(object):
         self.w, self.h = self.bb.w, self.bb.h
 
     def move(self, pos):
-        self.bb.move_ip(pos)
+        self.bb = self.bb.move(pos)
         self.pos = pos 
         self.x, self.y = self.bb.x, self.bb.y
 
@@ -79,7 +79,7 @@ class Card(object):
     """ Placeholder """
     def __init__(self, name):
         self.name = name
-        self.imagename = filter(lambda c: c not in ' :\'', name)
+        self.imagename = filter(lambda c: c not in ' .:\'', name)
         self.imagename += '.png'
 
     def getImageName(self):
