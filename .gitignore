@@ -1,5 +1,5 @@
 *.png
 !tmpbg.png
-!ManaFull.png
-!ManaDepleted.png
+!ManaFull*.png
+!ManaDepleted*.png
 *.pyc

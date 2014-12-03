@@ -37,6 +37,7 @@ class Application(UIObject):
     def onMouseDown(self, event):
         pass
 
+
     def loop(self):
         pass
 

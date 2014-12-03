@@ -33,7 +33,6 @@ class ManaApp(Application):
         pygame.display.flip()
 
 ma = ManaApp()
-print(ma.manaregion.manabbs[9])
 ma.execute()
 
 
