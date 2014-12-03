@@ -4,22 +4,32 @@ from pygame.locals import *
 import util.utilities as util
 
 class UIObject(object):
+    def _updatePosData(self):
+        self.pos = (self.bb.x, self.bb.y)
+        self.x, self.y = self.bb.x, self.bb.y
+        self.w, self.h = self.bb.w, self.bb.h
+
     def __init__(self, boundingbox):
         self.bb = boundingbox
-
         self.pos = (self.bb.x, self.bb.y)
         self.x, self.y = self.bb.x, self.bb.y
         self.w, self.h = self.bb.w, self.bb.h
-
+        self.printed = False
+    
     def changeBoundingBox(self, boundingbox):
-        self.pos = (self.bb.x, self.bb.y)
-        self.x, self.y = self.bb.x, self.bb.y
-        self.w, self.h = self.bb.w, self.bb.h
+        self.bb = boundingbox
+        self._updatePosData()
 
     def move(self, pos):
-        self.bb = self.bb.move(pos)
-        self.pos = pos 
-        self.x, self.y = self.bb.x, self.bb.y
+        self.bb.x, self.bb.y = pos
+        self._updatePosData()
+
+    def moveCenter(self, bb):
+        if bb.contains(self.bb) == False:
+            self.bb.clamp_ip(self.bb)
+        else:
+            self.bb.center = bb.center
+        self._updatePosData()
 
     def getPosition(self):
         return self.pos
@@ -42,7 +52,8 @@ class UISurfaceObject(UIObject):
         if self.moved:
             # FIXME: Possible That we need to blit out the previous 
             # image on a move. Future Review
-            pass
+            surface.blit(surface, self.prevbb.topleft, self.prevbb)
+            self.moved = True
         if not self.scaled:
             self.surface = pygame.transform.smoothscale(self.surface, self.bb.size)
             self.scaled = True
@@ -52,11 +63,19 @@ class UISurfaceObject(UIObject):
     def changeBoundingBox(self, boundingbox):
         self.moved = True
         self.scaled = False
+        self.prevpos = self.pos
         super(UISurfaceObject, self).changeBoundingBox(boundingbox)
     
     def move(self, pos):
         self.moved = True
+        self.prevbb = self.bb
         super(UISurfaceObject, self).move(pos)
+
+    def moveCenter(self, bb):
+        self.moved = True
+        self.prevbb = self.bb
+        super(UISurfaceObject, self).moveCenter(bb)
+   
 
 class UICachedImageObject(UISurfaceObject):
     def __init__(self, imagename, boundingbox):

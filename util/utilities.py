@@ -33,6 +33,7 @@ class Utilities(object):
         
         self.IMAGEDATA = {}
         self.imagelist = glob.glob(picspath + '*.png')
+
         self._loadImages()
 
     def _loadImages(self):
@@ -72,6 +73,7 @@ class ImageData(object):
 
 def getGlobals():
     if not _INITIALIZED:
+        # FIXME: This uses os.getcwd(), needs to be the base directory only.
         _init(os.path.join(os.getcwd(), 'pics' + os.sep), None)
     return _UTIL
     
