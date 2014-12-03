@@ -5,7 +5,6 @@
 " This module contains the ManaRegion class, a UIObject that renders mana symbols
 " on the screen.
 """
-
 import pygame
 from pygame.locals import *
 
