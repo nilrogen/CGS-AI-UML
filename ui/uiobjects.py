@@ -14,7 +14,6 @@ class UIObject(object):
         self.pos = (self.bb.x, self.bb.y)
         self.x, self.y = self.bb.x, self.bb.y
         self.w, self.h = self.bb.w, self.bb.h
-        self.printed = False
     
     def changeBoundingBox(self, boundingbox):
         self.bb = boundingbox

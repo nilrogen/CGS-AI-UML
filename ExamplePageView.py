@@ -7,8 +7,7 @@ from pygame.locals import *
 
 import util.utilities as util
 from ui.application import * 
-from ui.uiobjects import *
-
+from ui.uiobjects import * 
 class CardPage(UICachedImageObject):
     def __init__(self, boundingbox, bgimagename, cards):
         super(CardPage, self).__init__(bgimagename, boundingbox)
@@ -34,9 +33,7 @@ class CardPage(UICachedImageObject):
         self.children = [UICard(children[i], self.cardbbs[i]) for i in range(8)]
     def getCard(self, pos):
         for child in self.children:
-            if child.bb.collidepoint(pos):
-                return child
-        return None
+            if child.bb.collidepoint(pos): return child return None
 
     def draw(self, surface):
         super(CardPage, self).draw(surface)
@@ -84,7 +81,6 @@ class ImageViewerApplication(Application):
             card = self.page.getCard(pos)
             if card is None:
                 return
-            print card.card.name
 
 
     def loop(self):
