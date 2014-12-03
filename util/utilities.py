@@ -25,6 +25,7 @@ def _init(picspath, carddatapath):
         return
     _UTIL = Utilities(picspath, carddatapath)
     _INITIALIZED = True
+    print('INIT')
 
 class Utilities(object):
     def __init__(self, picspath, carddatapath):

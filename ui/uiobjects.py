@@ -8,9 +8,11 @@ class UIObject(object):
         self.pos = (self.bb.x, self.bb.y)
         self.x, self.y = self.bb.x, self.bb.y
         self.w, self.h = self.bb.w, self.bb.h
+        self.bbmoved = True
 
     def __init__(self, boundingbox):
         self.bb = boundingbox
+        self.bbmoved = False
         self.pos = (self.bb.x, self.bb.y)
         self.x, self.y = self.bb.x, self.bb.y
         self.w, self.h = self.bb.w, self.bb.h
@@ -49,8 +51,6 @@ class UISurfaceObject(UIObject):
 
     def draw(self, surface):
         if self.moved:
-            # FIXME: Possible That we need to blit out the previous 
-            # image on a move. Future Review
             surface.blit(surface, self.prevbb.topleft, self.prevbb)
             self.moved = True
         if not self.scaled:
@@ -92,6 +92,9 @@ class UICard(UICachedImageObject):
     def __init__(self, card, boundingbox):
         super(UICard, self).__init__(card.getImageName(), boundingbox)
         self.card = card
+
+    def getName(self):
+        return self.card.name
 
 class Card(object):
     """ Placeholder """
