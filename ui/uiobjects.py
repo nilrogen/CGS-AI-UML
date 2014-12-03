@@ -38,6 +38,9 @@ class UIObject(object):
     def getBoundingBox(self):
         return self.bb
 
+    def containsPoint(self, pos):
+        return self.bb.collidepoint(pos)
+
     def draw(self, surface):
         pass
 

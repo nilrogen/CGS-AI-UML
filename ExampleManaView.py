@@ -9,9 +9,9 @@ from ui.mana import *
 class ManaApp(Application):
     def __init__(self, windowsize=(515, 80)):
         super(ManaApp, self).__init__(windowsize)
-        self.manaregion = ManaRegion(pygame.Rect(0, 0, 505, 55), 
-                                     'ManaFull.png', 
-                                     'ManaDepleted.png', 0)
+        self.manaregion = ManaRegion(pygame.Rect(0, 0, 355, 40), 
+                                     'ManaFullSmall.png', 
+                                     'ManaDepletedSmall.png', 0)
         
     def onKeydown(self, event):
         key = event.key
@@ -33,6 +33,7 @@ class ManaApp(Application):
         pygame.display.flip()
 
 ma = ManaApp()
+print(ma.manaregion.manabbs[9])
 ma.execute()
 
 

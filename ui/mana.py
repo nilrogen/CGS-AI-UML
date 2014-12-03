@@ -33,7 +33,7 @@ class ManaRegion(UIObject):
         self.manadepletedpath = manadepleted
         self.manafull = None
         self.manadepleted = None
-        self.manabbs = [pygame.Rect(50*i+bb.x+5, 5+bb.y, 45, 45) for i in range(10)]
+        self.manabbs = [pygame.Rect(35*i+bb.x+5, 5+bb.y, 30, 30) for i in range(10)]
         self.currentmana = mana
         self.fullmana = mana
         self.surf = None
