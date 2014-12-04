@@ -8,11 +8,10 @@
 "
 " TODO: Fix model of retrieving resources.
 """
-
 import os
 import glob
 
-import pygame
+import pygame 
 from pygame.locals import * 
 
 _INITIALIZED = False
@@ -32,9 +31,8 @@ class Utilities(object):
         self.picspath = picspath
         self.carddatapath = carddatapath
         
-        self.IMAGEDATA = {}
+        self.IMAGEDATA = dict()
         self.imagelist = glob.glob(picspath + '*.png')
-
         self._loadImages()
 
     def _loadImages(self):
@@ -85,7 +83,8 @@ def getImage(imagename, alpha=True):
     " If the image has been converted already then that image will be returned,
     " otherwise it will be converted using either convert() or convert_alpha().
     " When the image name does not exist then an exception is raised.
-    " Names are in the form [name].[imagetype].
+    " Names are in the form:
+    "   <picspath>?<name>\.<imagetype>
     """
     imagedata = getGlobals().getImageData(imagename)
     if not imagedata:
