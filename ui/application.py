@@ -7,7 +7,7 @@
 """
 import pygame
 from pygame.locals import *
-from uiobjects import UIObject
+from ui.uiobjects import UIObject
 
 class Application(UIObject):
     def __init__(self, windowsize = (500, 500)):
@@ -36,7 +36,6 @@ class Application(UIObject):
         pass
     def onMouseDown(self, event):
         pass
-
 
     def loop(self):
         pass

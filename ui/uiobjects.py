@@ -77,7 +77,6 @@ class UISurfaceObject(UIObject):
         self.moved = True
         self.prevbb = self.bb
         super(UISurfaceObject, self).moveCenter(bb)
-   
 
 class UICachedImageObject(UISurfaceObject):
     def __init__(self, imagename, boundingbox):
@@ -104,7 +103,7 @@ class Card(object):
     def __init__(self, name):
         self.name = name
         self.imagename = filter(lambda c: c not in ' .:\'', name)
-        self.imagename += '.png'
+        self.imagename = ''.join(self.imagename) + '.png'
 
     def getImageName(self):
         return self.imagename
