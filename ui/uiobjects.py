@@ -25,6 +25,11 @@ class UIObject(object):
         self.bb.x, self.bb.y = pos
         self._updatePosData()
 
+    def moveRel(self, dx, dy):
+        self.bb.x += dx
+        self.bb.y += dy
+        self._updatePosData()
+
     def moveCenter(self, bb):
         if bb.contains(self.bb) == False:
             self.bb.clamp_ip(self.bb)
@@ -44,10 +49,13 @@ class UIObject(object):
     def draw(self, surface):
         pass
 
-class UISurfaceObject(UIObject):
+class UIScaleObject(UIObject):
+    """ TODO: Evaluate the usefullness of this subclass. I actually don't
+        Know what it does. """
+
 
     def __init__(self, surface, boundingbox):
-        super(UISurfaceObject, self).__init__(boundingbox)
+        super(UIScaleObject, self).__init__(boundingbox)
         self.surface = surface
         self.scaled = False
         self.moved = False
@@ -66,19 +74,37 @@ class UISurfaceObject(UIObject):
         self.moved = True
         self.scaled = False
         self.prevpos = self.pos
-        super(UISurfaceObject, self).changeBoundingBox(boundingbox)
+        super(UIScaleObject, self).changeBoundingBox(boundingbox)
     
     def move(self, pos):
         self.moved = True
         self.prevbb = self.bb
-        super(UISurfaceObject, self).move(pos)
+        super(UIScaleObject, self).move(pos)
 
     def moveCenter(self, bb):
         self.moved = True
         self.prevbb = self.bb
-        super(UISurfaceObject, self).moveCenter(bb)
+        super(UIScaleObject, self).moveCenter(bb)
 
-class UICachedImageObject(UISurfaceObject):
+class UISurfaceObject(UIObject):
+    def __init__(self, boundingbox):
+        super(UISurfaceObject, self).__init__(boundingbox)
+        self.surface = None
+        self.created = False
+
+    def forceUpdate(self):
+        self.created = False
+
+    def _constructSurface(self):
+        pass
+
+    def draw(self, surface):
+        if self.created == False:
+            self.created = True
+            self._constructSurface()
+
+
+class UICachedImageObject(UIScaleObject):
     def __init__(self, imagename, boundingbox):
         super(UICachedImageObject, self).__init__(None, boundingbox)
         self.loaded = False

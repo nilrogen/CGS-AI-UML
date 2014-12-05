@@ -11,15 +11,10 @@ COLOR_OVEHEALED = (0, 255, 60)
 COLOR_TAUNT = (133, 133, 133)
 COLOR_SHIELD = (255, 255, 0)
 
-class MinionBase(UIObject):
+class MinionBase(UISurfaceObject):
     def __init__(self, bb, minion):
         super(MinionBase, self).__init__(bb)
         self.minion = minion
-        self.changed = True
-        self.surface = None
-
-    def checkUpdates(self):
-        self.changed = True
    
 class MinionTemp(MinionBase):
     def __init__(self, bb, minion):
@@ -53,7 +48,7 @@ class MinionTemp(MinionBase):
         
         return (box, power, toughness)
         
-    def _create(self):
+    def _constructSurface(self):
         fontName = pygame.font.SysFont('Mono Bold', 30)
         font = pygame.font.SysFont('Mono Bold', 40)
 
@@ -80,9 +75,7 @@ class MinionTemp(MinionBase):
         self.surface.blit(toughness, (w2+4, yh+4))
 
     def draw(self, surface):
-        if self.changed:
-            self._create()
-            self.changed = False
+        super(MinionTemp, self).draw(surface)
         surface.blit(self.surface, self.pos)
     
     """ THESE ARE TEMPORARY MESSAGES THAT WILL BE IMPLEMENTED WITH THE ENGINE"""
@@ -115,7 +108,7 @@ class Minion(object):
 
     def damage(self, amt):
         if self.shielded:
-            self.shilded = False
+            self.shielded = False
             return True
         self.toughness -= amt
         self.overhealed = self.basetoughness < self.toughness
@@ -129,6 +122,7 @@ class Minion(object):
     def buff(self, pamt, tamt):
         self.heal(tamt)
         self.power += pamt
+
         self.status = 1
 
          
