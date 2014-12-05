@@ -20,8 +20,6 @@ class MinionBase(UIObject):
 
     def checkUpdates(self):
         self.changed = True
-            
-
    
 class MinionTemp(MinionBase):
     def __init__(self, bb, minion):
@@ -61,7 +59,7 @@ class MinionTemp(MinionBase):
 
         boxc, pc, tc = self._getColors()
 
-        yh = int(2.0 * self.bb.h / 3.0)
+        yh = int(3.0 * self.bb.h / 4.0)
         w1, w2 = int(self.bb.w * 0.25), int(self.bb.w * 0.75)
 
         box1 = pygame.Rect(0, 0, self.w, self.h)
@@ -100,10 +98,6 @@ class MinionTemp(MinionBase):
         return self.minion.shield
     def isOverhealed(self):
         return self.minion.overhealed
-
-        
-        
-
 
 class Minion(object):
     """ TODO: THIS IS A TEMPORARY CLASS!!!!"""

@@ -11,11 +11,11 @@ WINSIZE = 700, 600
 class App(Application):
     def __init__(self, windowsize=(200, 200)):
         super(App, self).__init__(windowsize)
-        self.objs = [MinionTemp(pygame.Rect(i, 0, 150, 150), None) for i in range(0, 600, 155)]
 
         self.objs = []
-        self.objs.append(MinionTemp(pygame.Rect(0, 0, 150, 150), \
+        self.objs.append(MinionTemp(pygame.Rect(0, 100, 150, 150), \
                                     Minion('TestMinion', 4, 6)))
+        self.moving = False
 
     def onKeydown(self, event):
         key = event.key
@@ -36,6 +36,24 @@ class App(Application):
         elif key == K_d:
             ref.buff(1, 1)
             minion.changed = True
+
+    def onMouseDown(self, event):
+        button = event.button
+        pos = event.pos
+
+        if self.objs[0].bb.collidepoint(pos):
+            self.moving = True
+
+    def onMouseUp(self, event):
+        self.moving = False
+        print('MouseUP')
+
+    def onMouseMotion(self, event):
+        dx, dy = event.rel
+        if self.moving:
+            obj = self.objs[0]
+            obj.move((obj.x + dx, obj.y + dy))
+        
 
     def render(self):
         self._display.fill((0, 0, 0))

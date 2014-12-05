@@ -29,12 +29,20 @@ class Application(UIObject):
             self.onKeyup(event)
         elif event.type == MOUSEBUTTONDOWN:
             self.onMouseDown(event)
+        elif event.type == MOUSEBUTTONUP:
+            self.onMouseUp(event)
+        elif event.type == MOUSEMOTION:
+            self.onMouseMotion(event)
 
     def onKeydown(self, event):
         pass
     def onKeyup(self, event):
         pass
     def onMouseDown(self, event):
+        pass
+    def onMouseUp(self, event):
+        pass
+    def onMouseMotion(self, event):
         pass
 
     def loop(self):
