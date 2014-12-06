@@ -7,9 +7,11 @@ from ui.mousehandler import *
 
 COLOR_WHITE = (255, 255, 255)
 COLOR_DAMAGED = (230, 20, 20)
-COLOR_OVEHEALED = (0, 255, 60)
-COLOR_TAUNT = (133, 133, 133)
-COLOR_SHIELD = (255, 255, 0)
+COLOR_BUFFED = (0, 255, 60)
+COLOR_BOX_TAUNT = (133, 133, 133)
+COLOR_BOX_SHIELD = (255, 255, 0)
+COLOR_AURA_SILENCE = (0, 0, 0)
+COLOR_AURA_CAN_ATTACK = (0, 0, 0)
 
 class MinionBase(UISurfaceObject):
     def __init__(self, bb, minion):
@@ -28,19 +30,19 @@ class MinionTemp(MinionBase):
 
     def _getColors(self):
         if self.isTaunt():
-            box = COLOR_TAUNT
+            box = COLOR_BOX_TAUNT
         else:
             box = COLOR_WHITE
 
         if  self.isDamaged():
             toughness = COLOR_DAMAGED
         elif self.isOverhealed():
-            toughness = COLOR_OVEHEALED
+            toughness = COLOR_BUFFED
         else:
             toughness = COLOR_WHITE
 
         if self.isBuffed():
-            power = COLOR_OVEHEALED
+            power = COLOR_BUFFED
         elif self.isDebuffed():
             power = COLOR_DAMAGED
         else:

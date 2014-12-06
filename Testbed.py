@@ -7,6 +7,9 @@ from ui.uiobjects import *
 from ui.widgets import *
 from ui.minion import * 
 
+import engine
+
+
 WINSIZE = 700, 600
 
 class App(Application):
