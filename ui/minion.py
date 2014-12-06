@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 
 import util.utilities as util
+from util.math import *
+
 from ui.uiobjects import *
 from ui.mousehandler import *
 
@@ -11,7 +13,7 @@ COLOR_BUFFED = (0, 255, 60)
 COLOR_BOX_TAUNT = (133, 133, 133)
 COLOR_BOX_SHIELD = (255, 255, 0)
 COLOR_AURA_SILENCE = (0, 0, 0)
-COLOR_AURA_CAN_ATTACK = (0, 0, 0)
+COLOR_AURA_CAN_ATTACK = (0, 255, 60)
 
 class MinionBase(UISurfaceObject):
     def __init__(self, bb, minion):
@@ -30,9 +32,11 @@ class MinionTemp(MinionBase):
 
     def _getColors(self):
         if self.isTaunt():
-            box = COLOR_BOX_TAUNT
+            aura = COLOR_BOX_TAUNT
         else:
-            box = COLOR_WHITE
+            aura = COLOR_WHITE
+
+        box = COLOR_AURA_CAN_ATTACK
 
         if  self.isDamaged():
             toughness = COLOR_DAMAGED
@@ -48,33 +52,47 @@ class MinionTemp(MinionBase):
         else:
             power = COLOR_WHITE
         
-        return (box, power, toughness)
+        return (aura, box, power, toughness)
         
     def _constructSurface(self):
-        fontName = pygame.font.SysFont('Mono Bold', 30)
+        self.surface = pygame.Surface(self.bb.size)
+
+        subsurface = pygame.Surface(addRect(self.bb, (0, 0), (-8, -8)).size)
+        ssbb = subsurface.get_rect()
+
+        fontName = pygame.font.SysFont('Mono Bold', 25)
         font = pygame.font.SysFont('Mono Bold', 40)
 
-        boxc, pc, tc = self._getColors()
+        aurac, boxc, pc, tc = self._getColors()
 
-        yh = int(3.0 * self.bb.h / 4.0)
-        w1, w2 = int(self.bb.w * 0.25), int(self.bb.w * 0.75)
+        yh = int(3.0 * ssbb.h / 4.0)
+        w1, w2 = int(ssbb.w * 0.25), int(ssbb.w * 0.75)
 
-        box1 = pygame.Rect(0, 0, self.w, self.h)
-        box2 = pygame.Rect(0,  yh, w1, self.h - yh)
-        box3 = pygame.Rect(w2, yh, w2, self.h - yh)
+        if not (self.isTaunt() or self.isShielded()):
+            surroundBox = 3
+        else:
+            surroundBox = 3
 
-        self.surface = pygame.Surface(self.bb.size)
+        boxoutline = pygame.Rect(0, 0, ssbb.w, ssbb.h)
+        boxpower = pygame.Rect(0,  yh, w1, ssbb.h - yh)
+        boxtoughness = pygame.Rect(w2, yh, ssbb.w - w2, ssbb.h - yh)
+        boxname = scaleRect(ssbb, (1, 1), (1, .2))
+
 
         power = font.render(str(self.minion.getPower()), True, pc) 
         toughness = font.render(str(self.minion.getToughness()), True, tc)
-        name = fontName.render(str('BANANA'), True, COLOR_WHITE)
+        name = fontName.render(str('PLACEHOLDER'), True, COLOR_WHITE)
 
-        pygame.draw.rect(self.surface, COLOR_WHITE, box2, 2)
-        pygame.draw.rect(self.surface, COLOR_WHITE, box3, 2)
-        pygame.draw.rect(self.surface, boxc, box1, 2)
-        self.surface.blit(name, (4, 4))
-        self.surface.blit(power, (4,yh+4))
-        self.surface.blit(toughness, (w2+4, yh+4))
+        pygame.draw.rect(subsurface, boxc, boxpower, 2)
+        pygame.draw.rect(subsurface, boxc, boxtoughness, 2)
+        pygame.draw.rect(subsurface, boxc, boxname, 2)
+        pygame.draw.rect(subsurface, boxc, boxoutline, surroundBox)
+        subsurface.blit(name, centerToRect(name.get_rect(), boxname))
+        subsurface.blit(power, centerToRect(power.get_rect(), boxpower))
+        subsurface.blit(toughness, centerToRect(toughness.get_rect(), boxtoughness))
+
+        self.surface.fill(aurac)
+        self.surface.blit(subsurface, centerToRect(ssbb, self.surface.get_rect()))
 
     def draw(self, surface):
         super(MinionTemp, self).draw(surface)
@@ -90,9 +108,21 @@ class MinionTemp(MinionBase):
     def isTaunt(self):
         return self.minion.taunt
     def isShielded(self):
-        return self.minion.shield
+        return self.minion.shielded
     def isOverhealed(self):
         return self.minion.overhealed
+
+    def buff(self, dp, dt):
+        self.minion.buff(dp, dt)
+        self.forceUpdate()
+    def shield(self):
+        self.minion.toggleShield()
+        self.forceUpdate()
+    def taunt(self):
+        self.minion.toggleTaunt()
+        self.forceUpdate()
+
+
 
 class Minion(object):
     """ TODO: THIS IS A TEMPORARY CLASS!!!!"""
@@ -124,29 +154,17 @@ class Minion(object):
     def buff(self, pamt, tamt):
         self.heal(tamt)
         self.power += pamt
-
         self.status = 1
 
-         
+    def toggleShield(self):
+        self.shielded = not self.shielded
 
-    def shield(self):
-        self.shielded = True
+    def toggleTaunt(self):
+        self.taunt = not self.taunt
 
-    def unshield(self):
-        self.shielded = False
-
-    def taunt(self):
-        self.taunt = True
-
-    def untaunt(self):
-        self.taunt = False
-
-    def stealth(self):
-        self.stealth = True
+    def toggleStealth(self):
+        self.stealth = not self.stealth
         
-    def unstealth(self):
-        self.stealth = False
-    
     def getPower(self):
         return self.power
 

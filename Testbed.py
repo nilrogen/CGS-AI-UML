@@ -18,15 +18,14 @@ class App(Application):
 
         self.obj = MinionTemp(pygame.Rect(0, 100, 150, 150), \
                                     Minion('TestMinion', 4, 6))
-        def act(x):
-            self.obj.minion.buff(x, x)
-            self.obj.forceUpdate()
 
         self.buttons = []
         self.buttons.append(ShittyButton('+1/+1', 
-                            pygame.Rect(200, 200,200, 70), lambda: act(1)))
+                            pygame.Rect(200, 10, 200, 70), lambda: self.obj.buff(1,1)))
         self.buttons.append(ShittyButton('-1/-1', 
-                            pygame.Rect(200, 280,200, 70), lambda: act(-1)))
+                            pygame.Rect(200, 90, 200, 70), lambda: self.obj.buff(-1, -1)))
+        self.buttons.append(ShittyButton('Taunt', 
+                            pygame.Rect(200, 170, 200, 70), self.obj.taunt))
         self.moving = False
 
     def onKeydown(self, event):
