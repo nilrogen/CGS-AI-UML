@@ -7,9 +7,11 @@
 """
 import pygame
 from pygame.locals import *
-from ui.uiobjects import UIObject
 
-class Application(UIObject):
+from ui.uiobjects import UIObject
+from ui.mousehandler import MouseEventHandler
+
+class Application(UIObject, MouseEventHandler):
     def __init__(self, windowsize = (500, 500)):
         UIObject.__init__(self, pygame.Rect((0, 0, windowsize[0], windowsize[1])))
         self.running = True
@@ -27,22 +29,11 @@ class Application(UIObject):
             self.onKeydown(event)
         elif event.type == KEYUP:
             self.onKeyup(event)
-        elif event.type == MOUSEBUTTONDOWN:
-            self.onMouseDown(event)
-        elif event.type == MOUSEBUTTONUP:
-            self.onMouseUp(event)
-        elif event.type == MOUSEMOTION:
-            self.onMouseMotion(event)
+        self.HandleMouseEvent(event) 
 
     def onKeydown(self, event):
         pass
     def onKeyup(self, event):
-        pass
-    def onMouseDown(self, event):
-        pass
-    def onMouseUp(self, event):
-        pass
-    def onMouseMotion(self, event):
         pass
 
     def loop(self):

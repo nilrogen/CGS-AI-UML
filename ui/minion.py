@@ -1,6 +1,9 @@
 import pygame
 from pygame.locals import *
 
+# Hearthbreaker call TODO: Possible change to import 
+import hearthbreaker.game_objects
+
 import util.utilities as util
 from util.math import *
 
@@ -14,24 +17,26 @@ COLOR_BOX_TAUNT = (133, 133, 133)
 COLOR_BOX_SHIELD = (255, 255, 0)
 COLOR_AURA_SILENCE = (0, 0, 0)
 COLOR_AURA_CAN_ATTACK = (0, 255, 60)
+COLOR_AURA_FROZEN = (0, 20, 255)
 
 class MinionBase(UISurfaceObject):
     def __init__(self, bb, minion):
         super(MinionBase, self).__init__(bb)
         self.minion = minion
    
-class MinionTemp(MinionBase):
-    def __init__(self, bb, minion):
+class MinionTemp(MinionBase, MouseEventHandler):
+    def __init__(self, bb, name, minion):
         super(MinionTemp, self).__init__(bb, minion)
 
         # Minion Properties
+        self.name = name
 
         if minion is not None:
-            self.power = minion.getPower()
-            self.toughness = minion.getToughness()
+            self.attack = minion.attack
+            self.health = minion.health
 
     def _getColors(self):
-        if self.isTaunt():
+        if self.hasTaunt():
             aura = COLOR_BOX_TAUNT
         else:
             aura = COLOR_WHITE
@@ -40,14 +45,14 @@ class MinionTemp(MinionBase):
 
         if  self.isDamaged():
             toughness = COLOR_DAMAGED
-        elif self.isOverhealed():
+        elif self.isBuffed():
             toughness = COLOR_BUFFED
         else:
             toughness = COLOR_WHITE
 
         if self.isBuffed():
             power = COLOR_BUFFED
-        elif self.isDebuffed():
+        elif self.isDamaged():
             power = COLOR_DAMAGED
         else:
             power = COLOR_WHITE
@@ -57,39 +62,44 @@ class MinionTemp(MinionBase):
     def _constructSurface(self):
         self.surface = pygame.Surface(self.bb.size)
 
-        subsurface = pygame.Surface(addRect(self.bb, (0, 0), (-8, -8)).size)
+        subsurface = pygame.Surface(addRect(self.bb, (0, 0), (-10, -10)).size)
         ssbb = subsurface.get_rect()
 
         fontName = pygame.font.SysFont('Mono Bold', 25)
-        font = pygame.font.SysFont('Mono Bold', 40)
+        fontText = pygame.font.SysFont('Mono Bold', 40)
 
         aurac, boxc, pc, tc = self._getColors()
 
         yh = int(3.0 * ssbb.h / 4.0)
         w1, w2 = int(ssbb.w * 0.25), int(ssbb.w * 0.75)
 
-        if not (self.isTaunt() or self.isShielded()):
-            surroundBox = 3
-        else:
-            surroundBox = 3
-
         boxoutline = pygame.Rect(0, 0, ssbb.w, ssbb.h)
-        boxpower = pygame.Rect(0,  yh, w1, ssbb.h - yh)
-        boxtoughness = pygame.Rect(w2, yh, ssbb.w - w2, ssbb.h - yh)
+        boxattack = pygame.Rect(0,  yh, w1, ssbb.h - yh)
+        boxhealth = pygame.Rect(w2, yh, ssbb.w - w2, ssbb.h - yh)
         boxname = scaleRect(ssbb, (1, 1), (1, .2))
 
+        if self.canAttack():
+            attackStr = 'Can Attack'
+        else:
+            attackStr = 'Can\'t Attack'
 
-        power = font.render(str(self.minion.getPower()), True, pc) 
-        toughness = font.render(str(self.minion.getToughness()), True, tc)
+
+        attack = fontText.render(str(self.getAttack()), True, pc) 
+        health = fontText.render(str(self.getHealth()), True, tc)
         name = fontName.render(str('PLACEHOLDER'), True, COLOR_WHITE)
+        attackStatus = fontName.render(attackStr, True, COLOR_WHITE)
 
-        pygame.draw.rect(subsurface, boxc, boxpower, 2)
-        pygame.draw.rect(subsurface, boxc, boxtoughness, 2)
+
+        pygame.draw.rect(subsurface, boxc, boxattack, 2)
+        pygame.draw.rect(subsurface, boxc, boxhealth, 2)
         pygame.draw.rect(subsurface, boxc, boxname, 2)
-        pygame.draw.rect(subsurface, boxc, boxoutline, surroundBox)
+        pygame.draw.rect(subsurface, boxc, boxoutline, 3)
+
         subsurface.blit(name, centerToRect(name.get_rect(), boxname))
-        subsurface.blit(power, centerToRect(power.get_rect(), boxpower))
-        subsurface.blit(toughness, centerToRect(toughness.get_rect(), boxtoughness))
+        subsurface.blit(attack, centerToRect(attack.get_rect(), boxattack))
+        subsurface.blit(health, centerToRect(health.get_rect(), boxhealth))
+        subsurface.blit(attackStatus, centerToRect(attackStatus.get_rect(), ssbb))
+
 
         self.surface.fill(aurac)
         self.surface.blit(subsurface, centerToRect(ssbb, self.surface.get_rect()))
@@ -99,77 +109,31 @@ class MinionTemp(MinionBase):
         surface.blit(self.surface, self.pos)
     
     """ THESE ARE TEMPORARY MESSAGES THAT WILL BE IMPLEMENTED WITH THE ENGINE"""
-    def isDamaged(self):
-        return self.minion.damaged
-    def isBuffed(self):
-        return self.minion.status == 1
-    def isDebuffed(self):
-        return self.minion.status == -1
-    def isTaunt(self):
+    def getHealth(self):
+        return self.minion.health
+    def getAttack(self):
+        return self.minion.calculate_attack()
+
+    def isFrozen(self):
+        return self.minion.taunt 
+    def hasStealth(self):
+        return self.minion.stealth
+    def hasTaunt(self):
         return self.minion.taunt
-    def isShielded(self):
-        return self.minion.shielded
-    def isOverhealed(self):
-        return self.minion.overhealed
-
-    def buff(self, dp, dt):
-        self.minion.buff(dp, dt)
-        self.forceUpdate()
-    def shield(self):
-        self.minion.toggleShield()
-        self.forceUpdate()
-    def taunt(self):
-        self.minion.toggleTaunt()
-        self.forceUpdate()
-
-
-
-class Minion(object):
-    """ TODO: THIS IS A TEMPORARY CLASS!!!!"""
-    def __init__(self, name, power, toughness):
-        self.name = name
-        self.power = self.basepower = power
-        self.toughness = self.basetoughness = toughness
-
-        self.damaged = False 
-        self.status = 0
-        self.overhealed = False
-        self.shielded = False
-        self.taunt = False
-        self.stealth = False
+    def hasDivineShield(self):
+        return self.minion.divine_shield
+    def canAttack(self):
+        return self.minion.can_attack
+    def isBuffed(self):
+        tm = self.minion
+        return  tm.attack_delta > 0 and tm.health_delta > 0
+    def isDamaged(self):
+        tm = self.minion
+        return tm.health < tm.base_health
 
     def damage(self, amt):
-        if self.shielded:
-            self.shielded = False
-            return True
-        self.toughness -= amt
-        self.overhealed = self.basetoughness < self.toughness
-        self.damaged = self.basetoughness > self.toughness
-        return self.toughness <= 0 
+        self.minion.damage(amt, None)
+        self.forceUpdate()
 
-    def heal(self, amt):
-        self.toughness += amt
-        self.overhealed = self.toughness > self.basetoughness
-
-    def buff(self, pamt, tamt):
-        self.heal(tamt)
-        self.power += pamt
-        self.status = 1
-
-    def toggleShield(self):
-        self.shielded = not self.shielded
-
-    def toggleTaunt(self):
-        self.taunt = not self.taunt
-
-    def toggleStealth(self):
-        self.stealth = not self.stealth
-        
-    def getPower(self):
-        return self.power
-
-    def getToughness(self):
-        return self.toughness
-
-
-
+    def shield(self):
+        self.minion.divine_shield = True

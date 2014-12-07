@@ -5,22 +5,22 @@ import util.utilities as util
 from ui.uiobjects import *
 
 class MouseEventHandler(object):
-    def MouseDown(self, event):
+    def onMouseDown(self, event):
         pass
 
-    def MouseUp(self, event):
+    def onMouseUp(self, event):
         pass
 
-    def MouseMove(self, event):
+    def onMouseMove(self, event):
         pass
     
-    def HandleEvent(self, event):
+    def HandleMouseEvent(self, event):
         if event.type == MOUSEBUTTONDOWN:
-            MouseDown(self, event)
+            self.onMouseDown(event)
         elif event.type == MOUSEBUTTONUP:
-            MouseUp(self, event)
+            self.onMouseUp(event)
         elif event.type == MOUSEMOTION:
-            MouseMove(self, event)
+            self.onMouseMove(event)
 
 
 # List of states

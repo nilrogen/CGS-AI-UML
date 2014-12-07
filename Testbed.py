@@ -7,8 +7,7 @@ from ui.uiobjects import *
 from ui.widgets import *
 from ui.minion import * 
 
-import engine
-
+import hearthbreaker.game_objects as go
 
 WINSIZE = 700, 600
 
@@ -17,15 +16,18 @@ class App(Application):
         super(App, self).__init__(windowsize)
 
         self.obj = MinionTemp(pygame.Rect(0, 100, 150, 150), \
-                                    Minion('TestMinion', 4, 6))
+                                    'Test', 
+                                    go.Minion(10, 10))
 
         self.buttons = []
-        self.buttons.append(ShittyButton('+1/+1', 
-                            pygame.Rect(200, 10, 200, 70), lambda: self.obj.buff(1,1)))
-        self.buttons.append(ShittyButton('-1/-1', 
-                            pygame.Rect(200, 90, 200, 70), lambda: self.obj.buff(-1, -1)))
+        self.buttons.append(ShittyButton('Damage',
+                            pygame.Rect(200, 10, 200, 70), lambda: self.obj.damage(1)))
+        self.buttons.append(ShittyButton('Shield', 
+                            pygame.Rect(200, 90, 200, 70), lambda: self.obj.shield()))
+        """
         self.buttons.append(ShittyButton('Taunt', 
                             pygame.Rect(200, 170, 200, 70), self.obj.taunt))
+        """
         self.moving = False
 
     def onKeydown(self, event):
@@ -33,6 +35,7 @@ class App(Application):
         if key == K_q:
             self.running = False
 
+        """
         if self.obj is None:
             return
         minion = self.obj
@@ -47,6 +50,7 @@ class App(Application):
         elif key == K_d:
             ref.buff(1, 1)
             minion.forceUpdate()
+        """
 
     def onMouseDown(self, event):
         button = event.button
@@ -56,15 +60,16 @@ class App(Application):
             self.moving = True
         for button in self.buttons:
             if button.containsPoint(pos):
-                button.mouseDown()
+                button.onMouseDown(event)
 
     def onMouseUp(self, event):
         self.moving = False
+        self.obj.fixPosition(self.bb)
         for button in self.buttons:
             if button.containsPoint(event.pos):
-                button.mouseUp()
+                button.onMouseUp(event)
 
-    def onMouseMotion(self, event):
+    def onMouseMove(self, event):
         dx, dy = event.rel
         if self.moving:
             obj = self.obj

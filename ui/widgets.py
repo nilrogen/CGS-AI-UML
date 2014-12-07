@@ -41,14 +41,25 @@ class ShittyButton(Widget, MouseEventHandler):
 
         self.surface.blit(textR, textrect)
     
-    def mouseDown(self):
+    def onMouseDown(self, event):
         self.clicked = True
         self.action()
         self.forceUpdate()
 
-    def mouseUp(self):
+    def onMouseUp(self, event):
         self.clicked = False
         self.forceUpdate()
+
+    def containsPoint(self, pos):
+        """ Odd method of preventing button from retaining clicked status
+            when on Mouse Up events when the mouse is not over the button. """
+        val = super(ShittyButton, self).containsPoint(pos)
+        if self.clicked and not val:
+            self.clicked = False
+            self.forceUpdate()
+        return val
+            
+            
 
     def draw(self, surface):
         super(ShittyButton, self).draw(surface)

@@ -31,10 +31,7 @@ class UIObject(object):
         self._updatePosData()
 
     def moveCenter(self, bb):
-        if bb.contains(self.bb) == False:
-            self.bb.clamp_ip(self.bb)
-        else:
-            self.bb.center = bb.center
+        self.bb.center = bb.center
         self._updatePosData()
 
     def getPosition(self):
@@ -42,6 +39,14 @@ class UIObject(object):
 
     def getBoundingBox(self):
         return self.bb
+
+    def fixPosition(self, to):
+        """ Fixes position of object to be inside the bounds of
+            the to argument. """ 
+        self.bb.clamp_ip(to)
+        self._updatePosData()
+
+
 
     def containsPoint(self, pos):
         return self.bb.collidepoint(pos)
