@@ -22,7 +22,7 @@ class CardImageViewerApplication(Application):
     def init(self):
         if super(CardImageViewerApplication, self).init() == False:
             return False
-        pygame.key.set_repeat(400, 800)
+        pygame.key.set_repeat(200, 600)
 
     def onKeydown(self, event):
         key = event.key
@@ -36,9 +36,10 @@ class CardImageViewerApplication(Application):
     def render(self):
         disp = self._display
         card = self.cards[self.index]
+
         card.moveCenter(self.bb)
 
-        disp.fill((0, 0, 0, 0), self.bb)
+        disp.fill((0, 0, 0), self.bb)
         card.draw(disp) 
         pygame.display.flip()
 

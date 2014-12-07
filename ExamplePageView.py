@@ -65,8 +65,7 @@ class ImageViewerApplication(Application):
         pygame.key.set_repeat(400, 800)
         pygame.mouse.set_visible(True)
 
-        bb = pygame.Rect(0, 0, self.w, self.h)
-        self.page = CardPage(bb, 'tmpbg.png', cards[self.index:self.index+8])
+        self.page = CardPage(self.bb, 'tmpbg.png', cards[self.index:self.index+8])
 
     def onKeydown(self, event):
         key = event.key
@@ -94,8 +93,7 @@ class ImageViewerApplication(Application):
             self.page.changeChildren(cards[self.index:self.index+8])
 
     def render(self):
-        disp = self._display
-        self.page.draw(disp)
+        self.page.draw(self._display)
         pygame.display.flip()
 
 if __name__ == '__main__':

@@ -46,8 +46,6 @@ class UIObject(object):
         self.bb.clamp_ip(to)
         self._updatePosData()
 
-
-
     def containsPoint(self, pos):
         return self.bb.collidepoint(pos)
 
@@ -109,17 +107,19 @@ class UISurfaceObject(UIObject):
             self._constructSurface()
 
 
-class UICachedImageObject(UIScaleObject):
+class UICachedImageObject(UISurfaceObject):
     def __init__(self, imagename, boundingbox):
-        super(UICachedImageObject, self).__init__(None, boundingbox)
-        self.loaded = False
+        super(UICachedImageObject, self).__init__(boundingbox)
         self.imagename = imagename
 
-    def draw(self, surface):
-        if not self.loaded:
+    def _constructSurface(self):
+        if self.surface is None:
             self.surface = util.getImage(self.imagename)
-            self.loaded = True
+        self.surface = pygame.transform.smoothscale(self.surface, self.bb.size)
+
+    def draw(self, surface):
         super(UICachedImageObject, self).draw(surface)
+        surface.blit(self.surface, self.pos)
      
 class UICard(UICachedImageObject):
     def __init__(self, card, boundingbox):
