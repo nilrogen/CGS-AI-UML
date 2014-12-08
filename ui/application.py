@@ -29,7 +29,8 @@ class Application(UIObject, MouseEventHandler):
             self.onKeydown(event)
         elif event.type == KEYUP:
             self.onKeyup(event)
-        self.HandleMouseEvent(event) 
+        elif MouseEventHandler.isMouseEvent(event):
+            self.HandleMouseEvent(event) 
 
     def onKeydown(self, event):
         pass

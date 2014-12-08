@@ -90,7 +90,15 @@ class UIScaleObject(UIObject):
         super(UIScaleObject, self).moveCenter(bb)
 
 class UISurfaceObject(UIObject):
+    """
+    " This abstract class serves as the basis for constructing UIObjects
+    " that have underlying pygame.Surface structures that can be generated
+    " once and reused each draw call. The only method that needs to be 
+    " overridden is _constructSurface, which initializes self.surface
+    " into a pygame.Surface object.
+    """
     def __init__(self, boundingbox):
+        # UIObject
         super(UISurfaceObject, self).__init__(boundingbox)
         self.surface = None
         self.created = False
@@ -108,6 +116,16 @@ class UISurfaceObject(UIObject):
 
 
 class UICachedImageObject(UISurfaceObject):
+    """
+    " This concrete class will store an image and retrieve/convert the image when
+    " draw(surface) or _constructSurface() are called. The Utility of this is that
+    " when dealing with large lists of UICachedImageObjects the slow operation of
+    " retrieving and converting the image to pygame.Surface is not done until it's
+    " needed. The image is scaled to the size of the bounding box.
+    "
+    " NOTE: MG - This class at the moment does not handle error checking. So be 
+    " sure to use only valid images (found in the pics path.)
+    """
     def __init__(self, imagename, boundingbox):
         super(UICachedImageObject, self).__init__(boundingbox)
         self.imagename = imagename

@@ -8,6 +8,7 @@ from pygame.locals import *
 import util.utilities as util
 from ui.application import * 
 from ui.uiobjects import * 
+from ui.cardobjects import UICard
 
 class CardPage(UICachedImageObject):
     def __init__(self, boundingbox, bgimagename, cards):
@@ -101,7 +102,7 @@ if __name__ == '__main__':
     cards = []
     # TODO: Fix this 
     for i in imagelist:
-        cards.append(Card(i.split(os.sep)[-1].split('.')[0]))
+        cards.append(tmpCard(i.split(os.sep)[-1].split('.')[0]))
     app = ImageViewerApplication(cards, (710, 550))
     app.execute()
     

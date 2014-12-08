@@ -22,6 +22,12 @@ class MouseEventHandler(object):
         elif event.type == MOUSEMOTION:
             self.onMouseMove(event)
 
+    @staticmethod
+    def isMouseEvent(event):
+        return (event.type == MOUSEBUTTONDOWN or 
+                event.type == MOUSEMOTION or 
+                event.type == MOUSEBUTTONUP)
+
 
 # List of states
 _START = 0

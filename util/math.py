@@ -10,6 +10,9 @@
 from pygame import Rect
 from pygame.locals import *
 
+def addPoint(point, dv):
+    return (point[0] + dv[0], point[1] + dv[1])
+
 def addRect(rect, dp, ds=(0, 0)):
     dx, dy = dp
     dw, dh = ds

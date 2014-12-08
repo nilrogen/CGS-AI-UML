@@ -37,9 +37,14 @@ class ProjectApplication(Application):
 
     def __init__(self, player, windowsize=WINDOW_SIZE):
         super().__init__(windowsize)
-        self.hand = UIHandObject(pygame.Rect(0, 0, 1000, 300), 'tmpbg.png', player)
+        self.hand = UIHandObject(pygame.Rect(400, 800, 1100, 200), 'tmpbg.png', player)
         
-    
+    def HandleMouseEvent(self, event):
+        if self.hand.containsPoint(event.pos):
+            self.hand.HandleMouseEvent(event)
+        else:
+            self.hand.removeMouseOver()
+
     def onKeydown(self, event):
         if event.key == K_q:
             self.running = False
