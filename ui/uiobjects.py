@@ -121,15 +121,8 @@ class UICachedImageObject(UISurfaceObject):
         super(UICachedImageObject, self).draw(surface)
         surface.blit(self.surface, self.pos)
      
-class UICard(UICachedImageObject):
-    def __init__(self, card, boundingbox):
-        super(UICard, self).__init__(card.getImageName(), boundingbox)
-        self.card = card
 
-    def getName(self):
-        return self.card.name
-
-class Card(object):
+class tmpCard(object):
     """ Placeholder """
     def __init__(self, name):
         self.name = name

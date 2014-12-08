@@ -654,6 +654,10 @@ class Card(Bindable):
         """
         super().__init__()
         self.name = name
+
+        # NOTE: MG - Reference to the name of the card's picture
+        self.imagename = ''.join(filter(lambda c: c not in ' .:\'', name)) + '.png'
+
         self.mana = mana
         self.character_class = character_class
         self.rarity = rarity
@@ -1570,11 +1574,15 @@ class Player(Bindable):
                 self.hand.append(card)
             else:
                 self.trigger("card_destroyed", card)
+            # NOTE: MG - added return
+            return card
         else:
             self.fatigue += 1
             self.hero.trigger("fatigue_damage", self.fatigue)
             self.hero.damage(self.fatigue, None)
             self.hero.activate_delayed()
+            # NOTE: MG - added return
+            return None
 
     def can_draw(self):
         return self.deck.can_draw()
@@ -1599,6 +1607,9 @@ class Player(Bindable):
             target = self.game.random_choice(targets)
             self.hand.remove(target)
             self.trigger("card_discarded", target)
+            # NOTE: MG - added return
+            return target
+        return None 
 
     def add_effect(self, effect):
         def remove_effect():
