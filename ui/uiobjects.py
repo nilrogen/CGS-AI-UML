@@ -134,7 +134,6 @@ class UICachedImage(Drawable):
     def draw(self, surface):
         if self.loadedImage is None:
             self.loadedImage = util.getImage(self.imagename)
-            print(self.size)
             self.loadedImage = pygame.transform.smoothscale(self.loadedImage, self.size)
         surface.blit(self.loadedImage, self.pos)
 
@@ -161,7 +160,7 @@ class UICachedImageObject(UISurfaceObject):
     def _constructSurface(self):
         if self.surface is None:
             self.surface = util.getImage(self.imagename)
-        self.surface = pygame.transform.smoothscale(self.surface, self.bb.size)
+            self.surface = pygame.transform.smoothscale(self.surface, self.bb.size)
 
     def draw(self, surface):
         super(UICachedImageObject, self).draw(surface)

@@ -16,15 +16,18 @@ import util.math as umath
 
 from ui.uiobjects import *
 from ui.mousehandler import *
+from ui.widgets import *
 
-#from hearthbreaker.game_objects import Game, Card, Minion
+from hearthbreaker.game_objects import Game, Card, Minion
 
+COLOR_PURPLE = (70, 0, 130)
 
 class UICard(UICachedImageObject):
 
     def __init__(self, card, boundingbox):
         super().__init__(card.imagename, boundingbox)
         self.card = card
+
 
     def getName(self):
         return self.card.name
@@ -65,6 +68,9 @@ class CardRegion(UISurfaceObject, MouseEventHandler):
         self.surface = pygame.Surface(self.bb.size)
         self.background.draw(self.surface)
 
+    def getMousedOverCard(self):
+        pass
+
 HAND_SIZE =  (1050, 220) 
 XPAD = 5 
 YPAD = 5
@@ -83,7 +89,7 @@ class UIHandObject(CardRegion):
         self.cardback = UICachedImage(cardback, (120,180))
         self.showhand = showhand
         self.uicards = []
-        self.cardmouseover = None
+        self.mouseover = None
 
 
     def _initBoundingBoxes(self):
@@ -93,6 +99,7 @@ class UIHandObject(CardRegion):
     def _constructSurface(self):
         super()._constructSurface()
         pygame.draw.rect(self.surface, (255, 255, 255), self.surface.get_rect(), 2)
+        self.surface.fill(COLOR_PURPLE)
 
         for i in range(self.numcards):
             self.uicards[i].changeBoundingBox(self.cardbbs[i])
@@ -119,6 +126,7 @@ class UIHandObject(CardRegion):
             if uic.containsPoint(normpos):
                 # TODO: Implement Mouseover
                 #self.cardmouseover = (uic, umath.addRect(uic.bb, self.bb))
+                self.mouseover = uic
                 return
         self.mouseover = None
         
@@ -140,19 +148,64 @@ class UIHandObject(CardRegion):
                     self.uicards.remove(uic)
                     break
             self.forceUpdate()
+
+    def getMousedOverCard(self):
+        return self.mouseover
+
+EXPANDED_SIZE = (240, 360)
+
+class CardView(UICachedImageObject):
+    def __init__(self, bgimage, card, pos):
+        super().__init__(bgimage, pygame.Rect(pos, EXPANDED_SIZE))
+        if card is not None:
+            self.image = UICachedImage(card.imagename, EXPANDED_SIZE)
+        else:
+            self.image = None
+
+       
+    def _constructSurface(self):
+        super()._constructSurface()
+        self.surface.fill(COLOR_PURPLE)
+        pygame.draw.rect(self.surface, (255,255,255), self.surface.get_rect(), 2)
+        
+
+    def changeCard(self, card):
+        if self.image is None:
+            self.image = UICachedImage(card.imagename, EXPANDED_SIZE)
+        else:
+            self.image.imagename = card.imagename
+            self.image.loadedImage = None
+
+    def reset(self):
+        self.image = None
+        self.forceUpdate()
+
+    def setPos(self, pos):
+        self.pos = pos
+
+    def draw(self, surface):
+        super().draw(surface)
+        if self.image is not None:
+            self.image.drawAt(surface, self.pos)
     
-            
-        
+HERO_SIZE = (200, 200)
+class UIHero(UISurfaceObject):
+    def __init__(self, hero, pos):
+        super().__init__(pygame.Rect(pos, HERO_SIZE))
+        self.hero = hero
+        self.heropowerbutton = ShittyButton('Hero Power',
+                                            umath.addRect(self.bb, (+5, +5), (-10, -100)),
+                                            lambda: print('MOOO'))
+                                            #lambda :self.hero.power.use())
 
+    def _constructSurface(self):
+        self.surface = pygame.Surface(HERO_SIZE)
+        self.surface.fill(COLOR_PURPLE)
 
-        
-
-
-        
-
-
-        
-
+    def draw(self, surface):
+        super().draw(surface)
+        surface.blit(self.surface, self.pos)
+        self.heropowerbutton.draw(surface)
 
         
 

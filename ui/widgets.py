@@ -10,7 +10,6 @@ class Widget(UISurfaceObject):
     def action(self):
         pass
     
-
 class ShittyButton(Widget, MouseEventHandler):
     
     def __init__(self, text, boundingbox, action):
@@ -58,8 +57,6 @@ class ShittyButton(Widget, MouseEventHandler):
             self.clicked = False
             self.forceUpdate()
         return val
-            
-            
 
     def draw(self, surface):
         super(ShittyButton, self).draw(surface)

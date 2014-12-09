@@ -8,8 +8,10 @@ import util.utilities as util
 
 from ui.application import Application
 from ui.uiobjects import tmpCard
-from ui.cardobjects import UIHandObject
+from ui.cardobjects import UIHandObject, CardView, UIHero
 from ui.mana import ManaRegion
+from ui.minion import MinionBase
+
 
 # Constant Values
 WINDOW_SIZE = (1900, 1000)
@@ -19,6 +21,8 @@ MANA_OPPONENT_LOC = (0, 0)
 
 PLAYER_HAND_LOC = (375, 780)
 OPPONENT_HAND_LOC = (410, 0)
+
+HERO_POWER_LOC = (1700, 700)
 
 class tmpPlayer(object):
     def __init__(self, cards):
@@ -43,25 +47,27 @@ class tmpPlayer(object):
 
 class ProjectApplication(Application):
 
-    def __init__(self, player, windowsize=WINDOW_SIZE):
+    def __init__(self, player, windowsize=WINDOW_SIZE): # 1900x1000
         super().__init__(windowsize)
         self.hand = UIHandObject.createDefaultHandRegion(PLAYER_HAND_LOC, player, False)
         self.manacurrent = ManaRegion.createDefaultManaRegion(MANA_PLAYER_LOC)
         self.manacurrent._setMana(4,10)
-        self.cardmouseover = None
+        self.cardmouseoverview = CardView('tmpbg.png', None, (0, 640))
+        self.hero = UIHero(None, HERO_POWER_LOC)
         
     def HandleMouseEvent(self, event):
         if self.hand.containsPoint(event.pos):
             self.hand.HandleMouseEvent(event)
-
-            # TODO: Implement mouse over 
-            """
-            cmo = self.hand.cardmouseover
-            if cmo is not None:
-                self.cardmousover = UICard(cmo.card, pygame.Rect(cmo.
-            """
+            mo = self.hand.getMousedOverCard()
+            if mo is None:
+                self.cardmouseoverview.reset()
+            else:
+                self.cardmouseoverview.changeCard(mo)
+        elif self.hero.heropowerbutton.containsPoint(event.pos):
+            self.hero.heropowerbutton.HandleMouseEvent(event)
         else:
             self.hand.removeMouseOver()
+            self.cardmouseoverview.reset()
 
     def onKeydown(self, event):
         if event.key == K_q:
@@ -76,6 +82,8 @@ class ProjectApplication(Application):
     def render(self):
         self.hand.draw(self._display)
         self.manacurrent.draw(self._display)
+        self.cardmouseoverview.draw(self._display)
+        self.hero.draw(self._display)
         pygame.display.flip()
     
 if __name__ == '__main__':
