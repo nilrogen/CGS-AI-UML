@@ -1,4 +1,5 @@
 import os
+import random
 
 import pygame
 from pygame.locals import *
@@ -8,9 +9,16 @@ import util.utilities as util
 from ui.application import Application
 from ui.uiobjects import tmpCard
 from ui.cardobjects import UIHandObject
+from ui.mana import ManaRegion
 
+# Constant Values
 WINDOW_SIZE = (1900, 1000)
-import random
+
+MANA_PLAYER_LOC = (1490, 950)
+MANA_OPPONENT_LOC = (0, 0)
+
+PLAYER_HAND_LOC = (375, 780)
+OPPONENT_HAND_LOC = (410, 0)
 
 class tmpPlayer(object):
     def __init__(self, cards):
@@ -37,11 +45,21 @@ class ProjectApplication(Application):
 
     def __init__(self, player, windowsize=WINDOW_SIZE):
         super().__init__(windowsize)
-        self.hand = UIHandObject(pygame.Rect(400, 800, 1100, 200), 'tmpbg.png', player)
+        self.hand = UIHandObject.createDefaultHandRegion(PLAYER_HAND_LOC, player)
+        self.manacurrent = ManaRegion.createDefaultManaRegion(MANA_PLAYER_LOC)
+        self.manacurrent._setMana(4,10)
+        self.cardmouseover = None
         
     def HandleMouseEvent(self, event):
         if self.hand.containsPoint(event.pos):
             self.hand.HandleMouseEvent(event)
+
+            # TODO: Implement mouse over 
+            """
+            cmo = self.hand.cardmouseover
+            if cmo is not None:
+                self.cardmousover = UICard(cmo.card, pygame.Rect(cmo.
+            """
         else:
             self.hand.removeMouseOver()
 
@@ -55,6 +73,7 @@ class ProjectApplication(Application):
 
     def render(self):
         self.hand.draw(self._display)
+        self.manacurrent.draw(self._display)
         pygame.display.flip()
     
 if __name__ == '__main__':

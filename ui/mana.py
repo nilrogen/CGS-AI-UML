@@ -7,50 +7,60 @@
 """
 import pygame
 from pygame.locals import *
+from pygame import Rect
 
 import util.utilities as util
 from ui.uiobjects import *
 
+from hearthbreaker.game_objects import Player
 
-class ManaRegion(UIObject):
+MANA_SIZE = (40, 40)
+COLOR_FILL = (50, 85, 170)
+
+
+class TmpGameObject:
+    mana = 0
+    max_mana = 0
+
+class ManaRegion(UISurfaceObject):
     """
     " The ManaRegion class defines the surface and utilities that manage the drawing
     " of mana symbols on the screen.
     """
 
-    def __init__(self, bb, manafull, manadepleted, mana=0):
+    def __init__(self, bb, manafull, manadepleted, player):
         """
         " bb - bounding box
         " manafull - name of the manafull image e.g. manafull.png
         " manadepleted - name of the manadepleted image
         " mana - starting mana 
         """
-        super(ManaRegion, self).__init__(bb)
-        self.loaded = False
-        self.changed = True
-        self.manafullpath = manafull
-        self.manadepletedpath = manadepleted
-        self.manafull = None
-        self.manadepleted = None
-        self.manabbs = [pygame.Rect(35*i+bb.x+5, 5+bb.y, 30, 30) for i in range(10)]
-        self.currentmana = mana
-        self.fullmana = mana
-        self.surf = None
+        super().__init__(bb)
+        self.manafull = UICachedImage(manafull, MANA_SIZE)
+        self.manadepleted = UICachedImage(manadepleted, MANA_SIZE)
+        self.manalocs = [(40*i+5, 5) for i in range(10)]
 
-    def _loadSurf(self):
-        self.surf = pygame.Surface((self.w, self.h))
-        pygame.draw.rect(self.surf, (255,255,255), self.bb, 4)
+        # Hearthbreaker values, found on Player.__init__ in game_objects.py
+        self.currentmana = player.mana
+        self.fullmana = player.max_mana
+
+    def _constructSurface(self):
+        self.surface = pygame.Surface(self.bb.size)
+        self.surface.fill(COLOR_FILL)
+        pygame.draw.rect(self.surface, (255,255,255), self.surface.get_rect(), 4)
+        pygame.draw.rect(self.surface, (0, 0, 0), self.surface.get_rect(), 2)
         for i in range(self.fullmana):
             if i < self.currentmana:
-                self.surf.blit(self.manafull, self.manabbs[i])
+                self.manafull.drawAt(self.surface, self.manalocs[i])
             else: 
-                self.surf.blit(self.manadepleted, self.manabbs[i])
+                self.manadepleted.drawAt(self.surface, self.manalocs[i])
 
 
     def _setMana(self, current, full):
         self.currentmana = min(current, 10)
         self.fullmana = min(full, 10)
         self.changed = True
+        self.forceUpdate()
 
     def resetMana(self):
         self._setMana(self.fullmana, self.fullmana)
@@ -72,13 +82,15 @@ class ManaRegion(UIObject):
         self._setMana(newmana, self.fullmana)
 
     def draw(self, surface):
-        if self.loaded == False:
-            self.manafull = util.getImage(self.manafullpath)
-            self.manadepleted = util.getImage(self.manadepletedpath)
-            self.loaded = True
-        if self.changed == True:
-            self._loadSurf()
-            changed = False
-        surface.blit(self.surf, self.bb)
+        super().draw(surface)
+        surface.blit(self.surface, self.pos)
 
+
+    @staticmethod
+    def createDefaultManaRegion(pos, gameObj=TmpGameObject()):
+        return ManaRegion(Rect(pos, (410, 50)),
+                         'ManaFull.png',
+                         'ManaDepleted.png', 
+                         gameObj)
+    
 

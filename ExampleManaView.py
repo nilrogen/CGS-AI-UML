@@ -9,9 +9,7 @@ from ui.mana import *
 class ManaApp(Application):
     def __init__(self, windowsize=(515, 80)):
         super(ManaApp, self).__init__(windowsize)
-        self.manaregion = ManaRegion(pygame.Rect(0, 0, 355, 40), 
-                                     'ManaFullSmall.png', 
-                                     'ManaDepletedSmall.png', 0)
+        self.manaregion = ManaRegion.createDefaultManaRegion((0, 0))
         
     def onKeydown(self, event):
         key = event.key

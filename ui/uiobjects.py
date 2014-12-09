@@ -3,7 +3,13 @@ from pygame.locals import *
 
 import util.utilities as util
 
-class UIObject(object):
+
+class Drawable:
+    """ This class is pretending to be a java style interface!"""
+    def draw(self, surface):
+        pass
+
+class UIObject(Drawable):
     def _updatePosData(self):
         self.pos = (self.bb.x, self.bb.y)
         self.x, self.y = self.bb.x, self.bb.y
@@ -114,6 +120,28 @@ class UISurfaceObject(UIObject):
             self.created = True
             self._constructSurface()
 
+class UICachedImage(Drawable):
+    """ 
+    " Sometimes you want a cached image that you can draw at various positions, 
+    " not caring about its bounding box
+    """
+    def __init__(self, imagename, size):
+        self.imagename = imagename
+        self.loadedImage = None
+        self.pos = (0, 0) # Defaults to (0, 0)
+        self.size = size
+
+    def draw(self, surface):
+        if self.loadedImage is None:
+            self.loadedImage = util.getImage(self.imagename)
+            print(self.size)
+            self.loadedImage = pygame.transform.smoothscale(self.loadedImage, self.size)
+        surface.blit(self.loadedImage, self.pos)
+
+    def drawAt(self, surface, pos):
+        self.pos = pos
+        self.draw(surface)
+        
 
 class UICachedImageObject(UISurfaceObject):
     """

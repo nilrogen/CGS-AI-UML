@@ -65,62 +65,52 @@ class CardRegion(UISurfaceObject, MouseEventHandler):
         self.surface = pygame.Surface(self.bb.size)
         self.background.draw(self.surface)
 
+HAND_SIZE =  (1050, 220) 
+XPAD = 5 
+YPAD = 5
+
 class UIHandObject(CardRegion):
     """ IM GOING TO HARDCODE THESE VALUES FUCK IT """
+    
+    @staticmethod
+    def createDefaultHandRegion(pos, player):
+        return UIHandObject(pygame.Rect(pos, HAND_SIZE), 'tmpbg.png', player)
+
     def __init__(self, bb, bgimagename, player):
         super().__init__(bb, bgimagename, player)
-        self.order = [i for i in range(10)]
         self.numcards = 0
         self.cards = []
         self.uicards = []
-        self.state = 0 # 0 - Start, 1 - MouseOver
-        self.cardover = None
+        self.cardmouseover = None
 
 
     def _initBoundingBoxes(self):
         for dx in range(0, 1000, 100):
-            self.cardbbs.append(pygame.Rect(dx, 0, 140, 210))
-        self.mouseoversize = (200, 300)
+            self.cardbbs.append(pygame.Rect(XPAD+dx, YPAD, 140, 210))
 
     def _constructSurface(self):
         super()._constructSurface()
+        pygame.draw.rect(self.surface, (255, 255, 255), self.surface.get_rect(), 2)
 
         for i in range(self.numcards):
             self.uicards[i].changeBoundingBox(self.cardbbs[i])
             self.uicards[i].draw(self.surface)
-        if self.cardover is not None:
-            newpos = umath.addPoint(self.cardover.pos, (0, -300))
-            self.cardover.changeBoundingBox(pygame.Rect(newpos, self.mouseoversize))
-            self.cardover.forceUpdate()
-            self.cardover.draw(self.surface)
 
     def draw(self, surface):
         super().draw(surface)
         surface.blit(self.surface, self.pos)
 
     def removeMouseOver(self):
-        self.state = 0
-        self.cardover = None
-        self.forceUpdate()
+        self.cardmouseover = None
 
     def onMouseMove(self, event):
         normpos = event.pos[0]-self.x, event.pos[1]-self.y
         for uic in reversed(self.uicards):
-            print(uic.pos, normpos)
             if uic.containsPoint(normpos):
-                print(uic)
-                if self.state == 0:
-                    self.cardover = copy(uic)
-                    self.state = 1
-                    self.forceUpdate()
-                elif self.cardover != uic:
-                    self.cardover = copy(uic)
-                    self.forceUpdate()
+                # TODO: Implement Mouseover
+                #self.cardmouseover = (uic, umath.addRect(uic.bb, self.bb))
                 return
-        self.state = 0 
-        self.cardOver = None
-        self.forceUpdate()
-        
+        self.mouseover = None
         
     def drawCard(self):
         card = self.gameobj.draw()
