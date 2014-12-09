@@ -6,7 +6,7 @@ I'm writing the UI with python 3.4
 **Special Thanks to the following github projects and their creators:**
 * **Hearthbreaker** - A FOSS Hearthstone engine written in python
    https://github.com/danielyule/hearthbreaker
-* **hearthston-db** - https://github.com/pdyck/hearthstone-db 
-  whose cardlist in Json Format made gathering card images much easier.
+* **hearthston-db** - A project whose cardlist in Json Format made gathering card images much easier.
+   https://github.com/pdyck/hearthstone-db
 
 
