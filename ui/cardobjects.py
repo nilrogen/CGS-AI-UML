@@ -73,13 +73,15 @@ class UIHandObject(CardRegion):
     """ IM GOING TO HARDCODE THESE VALUES FUCK IT """
     
     @staticmethod
-    def createDefaultHandRegion(pos, player):
-        return UIHandObject(pygame.Rect(pos, HAND_SIZE), 'tmpbg.png', player)
+    def createDefaultHandRegion(pos, player, showhand=True):
+        return UIHandObject(pygame.Rect(pos, HAND_SIZE), 'tmpbg.png', player, showhand, 'CardBack.png')
 
-    def __init__(self, bb, bgimagename, player):
+    def __init__(self, bb, bgimagename, player, showhand, cardback):
         super().__init__(bb, bgimagename, player)
         self.numcards = 0
         self.cards = []
+        self.cardback = UICachedImage(cardback, (120,180))
+        self.showhand = showhand
         self.uicards = []
         self.cardmouseover = None
 
@@ -94,7 +96,15 @@ class UIHandObject(CardRegion):
 
         for i in range(self.numcards):
             self.uicards[i].changeBoundingBox(self.cardbbs[i])
-            self.uicards[i].draw(self.surface)
+            if self.showhand:
+                self.uicards[i].draw(self.surface)
+            else:
+                x, y = self.uicards[i].pos
+                self.cardback.drawAt(self.surface, (x, y+10))
+
+    def toggleShow(self):
+        self.showhand = not self.showhand
+        self.forceUpdate()
 
     def draw(self, surface):
         super().draw(surface)

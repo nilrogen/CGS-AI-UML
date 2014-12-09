@@ -45,7 +45,7 @@ class ProjectApplication(Application):
 
     def __init__(self, player, windowsize=WINDOW_SIZE):
         super().__init__(windowsize)
-        self.hand = UIHandObject.createDefaultHandRegion(PLAYER_HAND_LOC, player)
+        self.hand = UIHandObject.createDefaultHandRegion(PLAYER_HAND_LOC, player, False)
         self.manacurrent = ManaRegion.createDefaultManaRegion(MANA_PLAYER_LOC)
         self.manacurrent._setMana(4,10)
         self.cardmouseover = None
@@ -70,6 +70,8 @@ class ProjectApplication(Application):
             self.hand.drawCard()
         elif event.key == K_f:
             self.hand.discard()
+        elif event.key == K_s:
+            self.hand.toggleShow()
 
     def render(self):
         self.hand.draw(self._display)
