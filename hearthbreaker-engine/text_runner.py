@@ -2,9 +2,10 @@ import curses
 import curses.textpad
 import sys
 
-from hearthbreaker.agents import registry
 from hearthbreaker.constants import CHARACTER_CLASS
 from hearthbreaker.ui.game_printer import GameRender
+from hearthbreaker.game_objects import *
+from hearthbreaker.agents import registry
 from hearthbreaker.cards import *
 
 
