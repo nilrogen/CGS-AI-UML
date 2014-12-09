@@ -8,7 +8,7 @@
 
 import json
 import os
-import urllib2
+import urllib
 import glob
 
 CURDIR = os.getcwd()
@@ -23,7 +23,7 @@ def loadJson():
 
 def downloadCard(card):
     # remove bad space, colon, and apostrophy from card name. 
-    cname = filter(lambda c: c not in ' .:\'', card["name"])
+    cname = "".join(filter(lambda c: c not in ' .:\'', card["name"]))
     cname += '.png'
 
     curl  = card["image_url"]
@@ -40,7 +40,7 @@ def downloadCard(card):
 
     cardfile = open(cardpath, 'wb')
 
-    print "Downloading: %s" % (cname)
+    print('Downloading: %s' % (cname))
 
     cardfile.write(urldata.read())
     cardfile.close()
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         # Create pics directory if one does not exist
         os.mkdir(PICSPATH)
     except OSError:
-        print 'Space Created'
+        print('Space Created')
         pass
     
 
