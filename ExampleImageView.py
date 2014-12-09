@@ -34,6 +34,7 @@ class CardImageViewerApplication(Application):
             self.running = False
 
     def render(self):
+        """
         disp = self._display
         card = self.cards[self.index]
 
@@ -41,13 +42,17 @@ class CardImageViewerApplication(Application):
 
         disp.fill((0, 0, 0), self.bb)
         card.draw(disp) 
+        """
+        UICachedImage('CardBack.png', (200, 300)).draw(self._display)
         pygame.display.flip()
 
 if __name__ == '__main__':
     imagelist = util.getGlobals().getImageList()
     cards = []
+    """
     for i in imagelist:
         cards.append(Card(i.split(os.sep)[-1].split('.')[0]))
+    """
     app = CardImageViewerApplication(cards)
     app.execute()
 
