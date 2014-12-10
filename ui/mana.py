@@ -39,6 +39,7 @@ class ManaRegion(UISurfaceObject):
         self.manafull = UICachedImage(manafull, MANA_SIZE)
         self.manadepleted = UICachedImage(manadepleted, MANA_SIZE)
         self.manalocs = [(40*i+5, 5) for i in range(10)]
+        self.player = player 
 
         # Hearthbreaker values, found on Player.__init__ in game_objects.py
         self.currentmana = player.mana
@@ -55,6 +56,10 @@ class ManaRegion(UISurfaceObject):
             else: 
                 self.manadepleted.drawAt(self.surface, self.manalocs[i])
 
+    def forceUpdate(self):
+        self.currentmana = self.player.mana
+        self.fullmana = self.player.max_mana
+        super().forceUpdate()
 
     def _setMana(self, current, full):
         self.currentmana = min(current, 10)

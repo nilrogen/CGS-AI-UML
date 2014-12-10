@@ -28,6 +28,13 @@ class UICard(UICachedImageObject):
         super().__init__(card.imagename, boundingbox)
         self.card = card
 
+    def changeCard(self, card):
+        if self.card != card:
+            self.card = card
+            self.forceUpdate()
+
+    def forceUpdate(self):
+        self.imagename = card.imagename
 
     def getName(self):
         return self.card.name
@@ -95,6 +102,22 @@ class UIHandObject(CardRegion):
     def _initBoundingBoxes(self):
         for dx in range(0, 1000, 100):
             self.cardbbs.append(pygame.Rect(XPAD+dx, YPAD, 140, 210))
+
+
+    def forceUpdate(self):
+        self.cards = self.gameobj.hand
+        self.numcards = len(self.cards)
+        print( self.cards, self.numcards, self.uicards)
+        for i in range(self.numcards):
+            if len(self.uicards) <= i:
+                self.uicards.append(UICard(self.cards[i], self.cardbbs[i]))
+            elif self.uicards[i] == None:
+                self.uicards[i] = UICard(self.cards[i], self.cardbbs[i])
+            else:
+                self.uicards[i].changeCard(self.cards[i])
+        super().forceUpdate()
+
+            
 
     def _constructSurface(self):
         super()._constructSurface()
@@ -197,6 +220,8 @@ class UIHero(UISurfaceObject):
                                             umath.addRect(self.bb, (+5, +5), (-10, -100)),
                                             lambda: print('MOOO'))
                                             #lambda :self.hero.power.use())
+
+        self.heropowerbutton.enabled = False
 
     def _constructSurface(self):
         self.surface = pygame.Surface(HERO_SIZE)

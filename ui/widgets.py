@@ -16,6 +16,7 @@ class ShittyButton(Widget, MouseEventHandler):
         super(ShittyButton, self).__init__(boundingbox)
         self.text = text
         self.clicked = False
+        self.enabled = False
         self.action = action
     
     def _constructSurface(self):
@@ -28,6 +29,8 @@ class ShittyButton(Widget, MouseEventHandler):
         self.surface.fill((0, 0, 0))
         if self.clicked:
             self.surface.fill((200, 255, 255), boxrect)
+        elif self.enabled:
+            self.surface.fill((100, 100, 100), boxrect)
         else:
             self.surface.fill((200, 200, 200), boxrect)
     
@@ -41,13 +44,15 @@ class ShittyButton(Widget, MouseEventHandler):
         self.surface.blit(textR, textrect)
     
     def onMouseDown(self, event):
-        self.clicked = True
-        self.action()
-        self.forceUpdate()
+        if self.enabled:
+            self.clicked = True
+            self.action()
+            self.forceUpdate()
 
     def onMouseUp(self, event):
-        self.clicked = False
-        self.forceUpdate()
+        if self.enabled:
+            self.clicked = False
+            self.forceUpdate()
 
     def containsPoint(self, pos):
         """ Odd method of preventing button from retaining clicked status
