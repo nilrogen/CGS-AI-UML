@@ -34,7 +34,7 @@ class UICard(UICachedImageObject):
             self.forceUpdate()
 
     def forceUpdate(self):
-        self.imagename = card.imagename
+        self.imagename = self.card.imagename
 
     def getName(self):
         return self.card.name
@@ -107,7 +107,6 @@ class UIHandObject(CardRegion):
     def forceUpdate(self):
         self.cards = self.gameobj.hand
         self.numcards = len(self.cards)
-        print( self.cards, self.numcards, self.uicards)
         for i in range(self.numcards):
             if len(self.uicards) <= i:
                 self.uicards.append(UICard(self.cards[i], self.cardbbs[i]))
