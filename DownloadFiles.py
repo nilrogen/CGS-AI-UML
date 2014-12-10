@@ -8,7 +8,7 @@
 
 import json
 import os
-import urllib
+from urllib.request import *
 import glob
 
 CURDIR = os.getcwd()
@@ -35,7 +35,7 @@ def downloadCard(card):
     os.chdir("..")
     
 
-    urldata = urllib2.urlopen(curl)
+    urldata = urlopen(curl)
     cardpath = os.path.join(PICSPATH, cname)
 
     cardfile = open(cardpath, 'wb')
