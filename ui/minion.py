@@ -25,6 +25,10 @@ class MinionBase(UISurfaceObject):
         self.minion = minion
    
 class MinionTemp(MinionBase, MouseEventHandler):
+
+    @staticmethod
+    def create(minion, bb):
+        return MinionTemp(bb, minion.card.name, minion)
     def __init__(self, bb, name, minion):
         super(MinionTemp, self).__init__(bb, minion)
 
@@ -32,6 +36,7 @@ class MinionTemp(MinionBase, MouseEventHandler):
         self.name = name
 
         if minion is not None:
+            self.minion = minion
             self.attack = minion.attack
             self.health = minion.health
 
@@ -86,7 +91,7 @@ class MinionTemp(MinionBase, MouseEventHandler):
 
         attack = fontText.render(str(self.getAttack()), True, pc) 
         health = fontText.render(str(self.getHealth()), True, tc)
-        name = fontName.render(str('PLACEHOLDER'), True, COLOR_WHITE)
+        name = fontName.render(self.name, True, COLOR_WHITE)
         attackStatus = fontName.render(attackStr, True, COLOR_WHITE)
 
 

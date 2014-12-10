@@ -9,7 +9,7 @@ import util.utilities as util
 
 from ui.application import Application
 from ui.uiobjects import tmpCard
-from ui.cardobjects import UIHandObject, CardView, UIHero
+from ui.cardobjects import UIHandObject, CardView, UIHero, Battlefield
 from ui.mana import ManaRegion
 from ui.minion import MinionBase
 
@@ -25,32 +25,14 @@ WINDOW_SIZE = (1900, 1000)
 MANA_PLAYER_LOC = (1490, 950)
 MANA_OPPONENT_LOC = (0, 0)
 
-PLAYER_HAND_LOC = (375, 780)
+PLAYER_HAND_LOC = (410, 780)
 OPPONENT_HAND_LOC = (410, 0)
 
 PLAYER_HERO_POWER_LOC = (1700, 700)
 OPPONENT_HERO_POWER_LOC = (0, 50)
 
-class tmpPlayer(object):
-    def __init__(self, cards):
-        self.cards = cards
-        self.hand = []
-        self.hsize = 0
-
-    def draw(self):
-        if self.hsize >= 10:
-            return None
-        self.hsize += 1
-        self.hand.append(self.cards[random.randint(0, 30)])
-        return self.hand[-1]
-
-    def discard(self):
-        if self.hsize == 0:
-            return None
-        self.hsize -= 1
-        card = random.choice(self.hand)
-        self.hand.remove(card)
-        return card
+PLAYER_BF_LOC = (400, 300)
+OPPONENT_BF_LOC = (400, 500)
 
 class ProjectApplication(Application):
 
@@ -58,6 +40,7 @@ class ProjectApplication(Application):
         super().__init__(windowsize)
         self.game = game
         player, opp = self.game.players[0], self.game.players[1]
+
         self.handb = UIHandObject.createDefaultHandRegion(PLAYER_HAND_LOC, player)
         self.handt = UIHandObject.createDefaultHandRegion(OPPONENT_HAND_LOC, opp) 
         self.hands = [self.handt, self.handb]
@@ -66,9 +49,14 @@ class ProjectApplication(Application):
         self.manaopponent = ManaRegion.createDefaultManaRegion(MANA_OPPONENT_LOC, opp)
         self.manabars = [self.manaplayer, self.manaopponent]
 
-        self.cardmouseoverview = CardView('tmpbg.png', None, (0, 640))
         self.hero = UIHero(player, PLAYER_HERO_POWER_LOC)
         self.ophero = UIHero(opp, OPPONENT_HERO_POWER_LOC)
+
+        self.playerbf = Battlefield(PLAYER_BF_LOC, 'tmpbg.png', player)
+        self.oppbf = Battlefield(OPPONENT_BF_LOC, 'tmpbg.png', opp)
+        self.battlefields = [self.playerbf, self.oppbf]
+
+        self.cardmouseoverview = CardView('tmpbg.png', None, (0, 640))
 
     def init(self):
         super().init()
@@ -77,15 +65,27 @@ class ProjectApplication(Application):
 
         
     def HandleMouseEvent(self, event):
-        for hand in self.hands:
-            if hand.containsPoint(event.pos):
-                hand.HandleMouseEvent(event)
-                mo = hand.getMousedOverCard()
+
+        for elm in self.hands:
+            if elm.containsPoint(event.pos):
+                elm.HandleMouseEvent(event)
+                mo = elm.getMousedOverCard()
                 if mo is None:
                     self.cardmouseoverview.reset()
                 else:
                     self.cardmouseoverview.changeCard(mo)
-                return
+                return True
+        for elm in self.battlefields:
+            if elm.containsPoint(event.pos):
+                elm.HandleMouseEvent(event)
+                mo = elm.getMousedOverCard()
+                if mo is None:
+                    self.cardmouseoverview.reset()
+                else:
+                    self.cardmouseoverview.changeCard(mo)
+                return True
+
+
         if self.hero.heropowerbutton.containsPoint(event.pos):
             self.hero.heropowerbutton.HandleMouseEvent(event)
         else:
@@ -97,6 +97,9 @@ class ProjectApplication(Application):
             h.forceUpdate()
         for m in self.manabars:
             m.forceUpdate()
+        for bf in self.battlefields:
+            bf.forceUpdate()
+
         self.hero.forceUpdate()
         self.ophero.forceUpdate()
         
@@ -113,6 +116,8 @@ class ProjectApplication(Application):
             h.draw(self._display) 
         for m in self.manabars:
             m.draw(self._display)
+        for bf in self.battlefields:
+            bf.draw(self._display)
 
         self.cardmouseoverview.draw(self._display)
         self.hero.draw(self._display)

@@ -17,8 +17,9 @@ import util.math as umath
 from ui.uiobjects import *
 from ui.mousehandler import *
 from ui.widgets import *
+from ui.minion import *
 
-from hearthbreaker.game_objects import Game, Card, Minion
+from hearthbreaker.game_objects import Game, Card, Minion, card_lookup
 
 COLOR_PURPLE = (70, 0, 130)
 
@@ -244,12 +245,47 @@ class UIHero(UISurfaceObject):
         surface.blit(self.surface, self.pos)
         self.heropowerbutton.draw(surface)
 
-"""
-class BattleField(CardRegion):
+BATTLEFIELD_SIZE = (1090, 160)
+MINION_SIZE = (150, 150)
+
+class Battlefield(CardRegion):
     def _initBoundingBoxes(self):
         for i in range(7):
+            self.cardbbs.append(pygame.Rect((self.x+5+155*i, self.y+5), MINION_SIZE))
+
+    def __init__(self, pos, bgimagename, player):
+        super().__init__(pygame.Rect(pos, BATTLEFIELD_SIZE), bgimagename, player)
+        self.minions = []
+        self.mousedover = None
+        
+    def _constructSurface(self):
+        self.surface = pygame.Surface(self.bb.size)
+        self.surface.fill((66, 66, 66))
+
+    def forceUpdate(self):
+        cm = self.gameobj.minions
+        self.minions = [MinionTemp.create(cm[i], self.cardbbs[i]) for i in range(len(cm))]
+        super().forceUpdate()
+        
+    def onMouseMove(self, event):
+        for mnn in self.minions:
+            if mnn.containsPoint(event.pos):
+                self.mouseover = mnn
+                return
+
+    def removeMouseOver(self):
+        self.mousedover = None
+
+    def getMousedOverCard(self):
+        return self.mousedover
+
+    def draw(self, surface):
+        super().draw(surface)
+        surface.blit(self.surface, self.pos)
+        for i in self.minions:
+            i.draw(surface) 
             
-"""
+            
     
 
         
