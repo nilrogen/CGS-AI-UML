@@ -106,6 +106,8 @@ class UIHandObject(CardRegion):
 
     def forceUpdate(self):
         self.cards = self.gameobj.hand
+        # TODO: THIS IS BAD HOLYSHIT
+        self.uicards = []
         self.numcards = len(self.cards)
         for i in range(self.numcards):
             if len(self.uicards) <= i:
@@ -233,7 +235,7 @@ class UIHero(UISurfaceObject):
         atext = text.render(str(armor), True, (255,255,255))
 
         self.surface.blit(htext, (5, 150))
-        self.surface.blit(htext, (145, 150))
+        self.surface.blit(atext, (145, 150))
         
     
 
@@ -242,8 +244,12 @@ class UIHero(UISurfaceObject):
         surface.blit(self.surface, self.pos)
         self.heropowerbutton.draw(surface)
 
-        
-
+"""
+class BattleField(CardRegion):
+    def _initBoundingBoxes(self):
+        for i in range(7):
+            
+"""
     
 
         
