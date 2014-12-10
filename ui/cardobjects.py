@@ -212,19 +212,30 @@ class CardView(UICachedImageObject):
     
 HERO_SIZE = (200, 200)
 class UIHero(UISurfaceObject):
-    def __init__(self, hero, pos):
+    def __init__(self, player, pos):
         super().__init__(pygame.Rect(pos, HERO_SIZE))
-        self.hero = hero
+        self.player = player
         self.heropowerbutton = ShittyButton('Hero Power',
                                             umath.addRect(self.bb, (+5, +5), (-10, -100)),
-                                            lambda: print('MOOO'))
-                                            #lambda :self.hero.power.use())
+                                            lambda: player.hero.power.use())
 
         self.heropowerbutton.enabled = False
 
     def _constructSurface(self):
         self.surface = pygame.Surface(HERO_SIZE)
+
+        text = pygame.font.SysFont('', 40)
         self.surface.fill(COLOR_PURPLE)
+
+        health = self.player.hero.health
+        armor = self.player.hero.armor
+        htext = text.render(str(health), True, (255, 255, 255))
+        atext = text.render(str(armor), True, (255,255,255))
+
+        self.surface.blit(htext, (5, 150))
+        self.surface.blit(htext, (145, 150))
+        
+    
 
     def draw(self, surface):
         super().draw(surface)

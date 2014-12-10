@@ -29,6 +29,7 @@ PLAYER_HAND_LOC = (375, 780)
 OPPONENT_HAND_LOC = (410, 0)
 
 PLAYER_HERO_POWER_LOC = (1700, 700)
+OPPONENT_HERO_POWER_LOC = (0, 50)
 
 class tmpPlayer(object):
     def __init__(self, cards):
@@ -66,7 +67,8 @@ class ProjectApplication(Application):
         self.manabars = [self.manaplayer, self.manaopponent]
 
         self.cardmouseoverview = CardView('tmpbg.png', None, (0, 640))
-        self.hero = UIHero(None, PLAYER_HERO_POWER_LOC)
+        self.hero = UIHero(player, PLAYER_HERO_POWER_LOC)
+        self.ophero = UIHero(opp, OPPONENT_HERO_POWER_LOC)
 
     def init(self):
         super().init()
@@ -95,17 +97,13 @@ class ProjectApplication(Application):
             h.forceUpdate()
         for m in self.manabars:
             m.forceUpdate()
+        self.hero.forceUpdate()
+        self.ophero.forceUpdate()
         
 
     def onKeydown(self, event):
         if event.key == K_q:
             self.running = False
-        elif event.key == K_d:
-            self.hand.drawCard()
-        elif event.key == K_f:
-            self.hand.discard()
-        elif event.key == K_s:
-            self.hand.toggleShow()
         elif event.key == K_SPACE:
             self.game.play_single_turn()
             self.UpdateAll()
@@ -118,6 +116,7 @@ class ProjectApplication(Application):
 
         self.cardmouseoverview.draw(self._display)
         self.hero.draw(self._display)
+        self.ophero.draw(self._display)
         pygame.display.flip()
 
 class GameEngineThread(threading.Thread):
