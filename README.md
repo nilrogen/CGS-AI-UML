@@ -1,7 +1,15 @@
 ###Readme
-I'm writing the UI with python 3.4
-- Libs Needed:
-  * pygame
+This Hearthstone AI is the collaboration of:
+	**Michael Gorlin**
+	**Stephen Crowe**
+	**Robert Shaffer**
+
+This program is written in Python 3. It requires the Python 3 version of pygame to run.
+
+####Installation Instructions:
+1 Run: python3 DownloadFiles.py
+2 Run: python3 ProjectMain.py 
+
 
 **Special Thanks to the following github projects and their creators:**
 * **Hearthbreaker** - A FOSS Hearthstone engine written in python
