@@ -1,8 +1,8 @@
 ###Readme
 This Hearthstone AI is the collaboration of:
-	* **Michael Gorlin**
-	* **Stephen Crowe**
-	* **Robert Shaffer**
+* **Michael Gorlin**
+* **Stephen Crowe**
+* **Robert Shaffer**
 
 This program is written in Python 3. It requires the Python 3 version of pygame to run.
 
