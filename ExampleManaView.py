@@ -1,3 +1,8 @@
+"""
+" AUTHOR: Michael Gorlin
+" 
+" This is an example of the mana view
+"""
 import pygame
 from pygame.locals import *
 

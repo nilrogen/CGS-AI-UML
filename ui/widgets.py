@@ -1,3 +1,8 @@
+"""
+" AUTHOR: Michael Gorlin
+" 
+" This is code for defining widgets, the main one being shitty widget.
+"""
 import pygame
 from pygame.locals import *
 

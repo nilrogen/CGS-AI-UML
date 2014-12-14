@@ -1,3 +1,8 @@
+"""
+" AUTHOR: Michael Gorlin
+" 
+" This contains the code for rendering minions
+"""
 import pygame
 from pygame.locals import *
 

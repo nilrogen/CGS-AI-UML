@@ -5,6 +5,7 @@ This Hearthstone AI is the collaboration of:
 * **Robert Shaffer**
 
 This program is written in Python 3. It requires the Python 3 version of pygame to run.
+The program is hardcoded for a 1900x1000 resolution. 
 
 ####Installation Instructions:
 After correctly installing python 3 and pygame for python 3:

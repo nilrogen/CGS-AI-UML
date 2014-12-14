@@ -1,3 +1,8 @@
+"""
+" AUTHOR: Michael Gorlin
+" 
+" This is an example of viewing card images.
+"""
 import glob
 import os
 

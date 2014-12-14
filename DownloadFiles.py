@@ -1,11 +1,12 @@
-# AUTHOR: Michael Gorlin
-# DATE:   2014-11-21
-# 
-# Downloads hearthstone picture art from the all-cards.json file. 
-# This file was found at: 
-#   https://github.com/pdyck/hearthstone-db
-#
-
+"""
+" AUTHOR: Michael Gorlin
+" DATE:   2014-11-21
+" 
+" Downloads hearthstone picture art from the all-cards.json file. 
+" This file was found at: 
+"   https://github.com/pdyck/hearthstone-db
+"
+"""
 import json
 import os
 from urllib.request import *
