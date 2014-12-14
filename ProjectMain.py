@@ -1,6 +1,10 @@
+"""
+" AUTHOR: Michael Gorlin
+" 
+" This is the main project application definition.
+"""
 import os
 import random
-import threading
 
 import pygame
 from pygame.locals import *
@@ -124,25 +128,6 @@ class ProjectApplication(Application):
         self.ophero.draw(self._display)
         pygame.display.flip()
 
-class GameEngineThread(threading.Thread):
-
-    def __init__(self, app, game):
-        super().__init__()
-        self.game = game
-        self.app = app
-    
-    def run(self):
-        self.game.pre_game()
-        self.game.current_player = self.game.players[1]
-
-        def gameLoop(app, game):
-            game.play_single_turn()
-            app.UpdateAll()
-
-        while not self.game.game_ended:
-            timer = threading.Timer(1.5, gameLoop, self.app, self.game)
-            timer.start()
-
 def load_deck(filename):
     cards = []
     character_class = CHARACTER_CLASS.MAGE
@@ -165,15 +150,14 @@ def load_deck(filename):
     return Deck(cards, character_class)
     
 if __name__ == '__main__':
+
+    # Change here for different decks
     deck1 = load_deck('zoo.hsdeck')
     deck2 = load_deck('zoo.hsdeck')
 
+    # Change Here for different Agents
     game = Game([deck1, deck2], [RandomAgent(), RandomAgent()])
 
     UIProject = ProjectApplication(game, WINDOW_SIZE)
-    Engine = GameEngineThread(UIProject, game)
-
-    #Engine.run()
-    print('BLsadlasd')
     UIProject.execute()
 
